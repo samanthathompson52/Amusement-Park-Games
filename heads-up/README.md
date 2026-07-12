@@ -16,6 +16,9 @@ step. Ships with ready-to-play card packs so you can start a round the moment it
 - **Results screen** listing every card you got and passed.
 - **Build-your-own decks** in the app — saved to your browser, merged in automatically.
   Perfect for inside jokes, classrooms, team offsites, or bachelorette parties.
+- **✨ AI-generated decks** — describe any category ("90s cartoon characters", "types of
+  cheese") and Claude writes a full deck of 30–40 cards for you. Review and tweak the
+  result before saving. Uses your own Anthropic API key, stored **only in your browser**.
 - Sound cues, haptic vibration, and a screen wake-lock so the display stays on mid-round.
 - **Zero dependencies, zero build** — just static `index.html` + `packs.js`.
 
@@ -36,6 +39,14 @@ Because it's plain static files, you can play it several ways:
 
 **In the app:** tap **➕ New Deck**, name it, pick an icon, paste one word per line, save.
 Your deck is stored in that browser and appears alongside the built-ins.
+
+**With AI:** tap **✨ AI Deck**, describe a category, and Claude generates a full deck for
+you. Paste an [Anthropic API key](https://console.anthropic.com/settings/keys) (kept in
+your browser's local storage and sent straight to Anthropic — never to this project) the
+first time; it's remembered afterward. The generated deck opens in the builder so you can
+edit names or cards before saving. No server, no build step — the request goes directly
+from your browser to the Claude API using the `claude-opus-4-8` model and structured
+outputs, so you always get a clean, ready-to-play card list.
 
 **In code (to share with everyone):** open [`packs.js`](./packs.js) and add an object:
 

@@ -67,6 +67,28 @@
     .deck.custom .badge { position: absolute; top: 12px; right: 12px; font-size: 0.62rem; background: rgba(255,255,255,0.12); padding: 3px 8px; border-radius: 20px; letter-spacing: .5px; }
     .deck.new-deck { border: 2px dashed rgba(255,255,255,0.2); background: transparent; align-items: center; justify-content: center; text-align: center; }
     .deck.new-deck .emoji { opacity: .8; }
+    .deck.ai-deck { border: 2px dashed rgba(139,92,246,0.55); background: linear-gradient(160deg, rgba(139,92,246,0.14), rgba(14,165,233,0.10)); align-items: center; justify-content: center; text-align: center; }
+    .deck.ai-deck .emoji { opacity: .95; }
+    .deck.ai-deck .name { color: #c4b5fd; }
+
+    /* ---------- AI generator ---------- */
+    .ai-hero { text-align: center; margin-bottom: 6px; }
+    .ai-hero .spark { font-size: 2.6rem; }
+    .ai-hero h2 { font-size: 1.6rem; margin-top: 6px; }
+    .ai-hero p { color: var(--muted); font-size: 0.9rem; margin-top: 6px; max-width: 420px; }
+    .ai-status { font-size: 0.88rem; min-height: 1.2em; text-align: center; }
+    .ai-status.working { color: #c4b5fd; }
+    .ai-status.error { color: #f87171; }
+    .ai-status .dots::after { content: '…'; animation: dots 1.2s steps(4, end) infinite; }
+    @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+    .ai-key-wrap { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px; margin-top: 4px; }
+    .ai-key-wrap summary { cursor: pointer; font-size: 0.85rem; color: var(--muted); list-style: none; }
+    .ai-key-wrap summary::-webkit-details-marker { display: none; }
+    .ai-key-wrap summary::before { content: '▸ '; }
+    .ai-key-wrap[open] summary::before { content: '▾ '; }
+    .ai-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .ai-chips button { background: var(--card); border: 1px solid rgba(255,255,255,0.12); color: var(--muted); border-radius: 20px; padding: 6px 12px; font-size: 0.8rem; cursor: pointer; }
+    .ai-chips button:hover { border-color: var(--accent); color: var(--text); }
 
     /* ---------- Ready ---------- */
     .center-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 18px; }
@@ -216,6 +238,39 @@
       </div>
     </section>
 
+    <!-- AI GENERATOR -->
+    <section id="ai-screen" class="screen">
+      <button class="btn ghost top-back" onclick="Game.goHome()">‹ Decks</button>
+      <div class="center-col" style="justify-content:flex-start;padding-top:8px">
+        <div class="ai-hero">
+          <div class="spark">✨</div>
+          <h2>Generate a Deck with AI</h2>
+          <p>Describe any category and Claude will write a full deck of cards for you. Review and tweak it before saving.</p>
+        </div>
+        <div class="builder">
+          <div>
+            <label>What's the category?</label>
+            <input id="ai-topic" placeholder="e.g. 90s cartoon characters" maxlength="120" />
+            <div class="ai-chips" id="ai-chips"></div>
+          </div>
+          <div class="ai-status" id="ai-status"></div>
+          <div class="row">
+            <button class="btn" style="flex:1" id="ai-go" onclick="Game.generateAIDeck()">✨ Generate Deck</button>
+          </div>
+          <details class="ai-key-wrap" id="ai-key-wrap">
+            <summary>Anthropic API key</summary>
+            <div style="margin-top:10px">
+              <input id="ai-key" type="password" placeholder="sk-ant-..." autocomplete="off" spellcheck="false" />
+              <div class="hint-sm" style="margin-top:8px">
+                Your key stays in <b>this browser only</b> (saved to local storage) and is sent straight to Anthropic — never to us.
+                Grab one from the <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" style="color:var(--accent)">Anthropic Console</a>.
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
     <!-- BUILDER -->
     <section id="builder-screen" class="screen">
       <button class="btn ghost top-back" onclick="Game.goHome()">‹ Decks</button>
@@ -269,11 +324,14 @@
     let wakeLock = null;
 
     const $ = id => document.getElementById(id);
-    const screens = ['home', 'ready', 'countdown', 'play', 'results', 'builder'];
+    const screens = ['home', 'ready', 'countdown', 'play', 'results', 'builder', 'ai'];
 
     // ---- Persistence ----
     const CUSTOM_KEY = 'headsup_custom_packs_v1';
     const SET_KEY = 'headsup_settings_v1';
+    const KEY_KEY = 'headsup_anthropic_key_v1';
+    function loadApiKey() { try { return localStorage.getItem(KEY_KEY) || ''; } catch { return ''; } }
+    function saveApiKey(k) { try { localStorage.setItem(KEY_KEY, k); } catch {} }
     function loadCustom() {
       try { return JSON.parse(localStorage.getItem(CUSTOM_KEY)) || []; } catch { return []; }
     }
@@ -306,6 +364,12 @@
         el.onclick = () => openReady(p);
         grid.appendChild(el);
       });
+      // Generate-with-AI tile
+      const ai = document.createElement('div');
+      ai.className = 'deck ai-deck';
+      ai.innerHTML = `<div class="emoji">✨</div><div class="name">AI Deck</div><div class="desc">Describe a category, let AI build it</div>`;
+      ai.onclick = openAI;
+      grid.appendChild(ai);
       // Add-your-own tile
       const add = document.createElement('div');
       add.className = 'deck new-deck';
@@ -526,13 +590,16 @@
     // ---- Builder ----
     const EMOJIS = ['🎉', '🎯', '💡', '🍀', '🔥', '🎸', '🐙', '🚀', '👑', '🧩', '🍩', '🏆'];
     let chosenEmoji = '🎉';
-    function openBuilder() {
-      $('b-name').value = '';
-      $('b-cards').value = '';
-      chosenEmoji = EMOJIS[0];
+    function openBuilder(prefill) {
+      const pre = (prefill && typeof prefill === 'object') ? prefill : null;
+      $('b-name').value = pre ? (pre.name || '') : '';
+      $('b-cards').value = pre ? (pre.cards || []).join('\n') : '';
+      // Build the emoji palette, folding in a prefill emoji that isn't already listed.
+      const palette = pre && pre.emoji && !EMOJIS.includes(pre.emoji) ? [pre.emoji, ...EMOJIS] : EMOJIS.slice();
+      chosenEmoji = pre && pre.emoji ? pre.emoji : palette[0];
       const pick = $('emoji-pick');
       pick.innerHTML = '';
-      EMOJIS.forEach(em => {
+      palette.forEach(em => {
         const b = document.createElement('button');
         b.textContent = em;
         b.className = em === chosenEmoji ? 'on' : '';
@@ -567,6 +634,107 @@
       goHome();
     }
 
+    // ---- AI deck generation ----
+    const AI_IDEAS = ['90s cartoon characters', 'Board games', 'Types of cheese', 'Broadway musicals', 'Video game villains', 'Cocktails', 'Dog breeds', 'Superheroes', 'World capitals', 'Breakfast foods'];
+    let aiBusy = false;
+    function openAI() {
+      $('ai-topic').value = '';
+      $('ai-key').value = loadApiKey();
+      $('ai-key-wrap').open = !loadApiKey();  // expand the key section if none saved yet
+      setAIStatus('', null);
+      const chips = $('ai-chips');
+      chips.innerHTML = '';
+      // Offer a few random starter ideas so the box is never intimidatingly blank.
+      shuffle(AI_IDEAS.slice()).slice(0, 4).forEach(idea => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = idea;
+        b.onclick = () => { $('ai-topic').value = idea; };
+        chips.appendChild(b);
+      });
+      show('ai');
+    }
+    function setAIStatus(msg, working) {
+      const el = $('ai-status');
+      el.className = 'ai-status' + (working === true ? ' working' : working === false ? ' error' : '');
+      el.innerHTML = working === true ? escapeHtml(msg) + '<span class="dots"></span>' : escapeHtml(msg);
+    }
+    async function generateAIDeck() {
+      if (aiBusy) return;
+      const topic = $('ai-topic').value.trim();
+      const key = $('ai-key').value.trim();
+      if (!topic) { setAIStatus('Describe a category first.', false); return; }
+      if (!key) { $('ai-key-wrap').open = true; setAIStatus('Add your Anthropic API key below to generate.', false); return; }
+      saveApiKey(key);
+      aiBusy = true;
+      $('ai-go').disabled = true;
+      setAIStatus('Writing your deck', true);
+      try {
+        const deck = await requestAIDeck(topic, key);
+        setAIStatus('', null);
+        // Hand off to the builder so the player can review and tweak before saving.
+        openBuilder({ name: deck.name || topic, emoji: deck.emoji || '✨', cards: deck.cards });
+      } catch (e) {
+        setAIStatus((e && e.message) ? e.message : 'Something went wrong — try again.', false);
+      } finally {
+        aiBusy = false;
+        $('ai-go').disabled = false;
+      }
+    }
+    async function requestAIDeck(topic, key) {
+      const schema = {
+        type: 'object',
+        properties: {
+          name: { type: 'string' },
+          emoji: { type: 'string' },
+          cards: { type: 'array', items: { type: 'string' } }
+        },
+        required: ['name', 'emoji', 'cards'],
+        additionalProperties: false
+      };
+      const prompt =
+        `Build a "Heads Up!" party guessing deck for the category: "${topic}".\n` +
+        `Return 30-40 cards. Each card is a single word or short phrase (1-4 words) that a player would act out or describe out loud — widely recognizable, no duplicates, no numbering, and appropriate for a general party audience.\n` +
+        `Also give the deck a short punchy name (max 30 characters) and one emoji that captures the theme.`;
+      let res;
+      try {
+        res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'x-api-key': key,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          },
+          body: JSON.stringify({
+            model: 'claude-opus-4-8',
+            max_tokens: 1024,
+            output_config: { format: { type: 'json_schema', schema } },
+            messages: [{ role: 'user', content: prompt }]
+          })
+        });
+      } catch (e) {
+        throw new Error('Network error — check your connection and try again.');
+      }
+      if (!res.ok) {
+        if (res.status === 401) throw new Error('That API key was rejected — double-check it and try again.');
+        if (res.status === 429) throw new Error('Rate limited by Anthropic — wait a moment and retry.');
+        let detail = '';
+        try { const j = await res.json(); detail = (j.error && j.error.message) || ''; } catch {}
+        throw new Error(detail || ('Request failed (' + res.status + ').'));
+      }
+      const json = await res.json();
+      if (json.stop_reason === 'refusal') throw new Error('That topic was declined — try a different category.');
+      const text = (json.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+      let parsed;
+      try { parsed = JSON.parse(text); } catch { throw new Error('Could not read the AI response — try again.'); }
+      const cards = Array.from(new Set((parsed.cards || []).map(c => String(c).trim()).filter(Boolean)));
+      if (cards.length < 5) throw new Error('Got too few cards — try a more specific topic.');
+      let emoji = (parsed.emoji || '✨').trim();
+      if (Array.from(emoji).length > 1) emoji = Array.from(emoji)[0];  // keep a single glyph
+      return { name: (parsed.name || topic).slice(0, 30), emoji, cards };
+    }
+
     // ---- Helpers ----
     function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
     function isTouch() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0; }
@@ -592,10 +760,11 @@
       renderDecks();
       bindTap();
       $('b-cards') && $('b-cards').addEventListener('input', updateBuilderCount);
+      $('ai-topic') && $('ai-topic').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); generateAIDeck(); } });
       document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && running) requestWake(); });
     }
 
-    return { init, goHome, beginCountdown, openBuilder, saveCustom, answer };
+    return { init, goHome, beginCountdown, openBuilder, saveCustom, answer, openAI, generateAIDeck };
   })();
 
   Game.init();
