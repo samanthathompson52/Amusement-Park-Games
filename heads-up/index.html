@@ -485,7 +485,14 @@
     }
 
     function nextWord() {
-      if (deck.length === 0) deck = shuffle([...current.cards]); // reshuffle if exhausted
+      if (deck.length === 0) {
+        deck = shuffle([...current.cards]); // reshuffle a fresh random order when exhausted
+        // Don't let the word we just showed reappear back-to-back across the reshuffle.
+        if (deck.length > 1 && deck[deck.length - 1] === current._lastWord) {
+          const j = Math.floor(Math.random() * (deck.length - 1));
+          [deck[deck.length - 1], deck[j]] = [deck[j], deck[deck.length - 1]];
+        }
+      }
       const w = deck.pop();
       current._lastWord = w;
       $('the-word').textContent = w;
