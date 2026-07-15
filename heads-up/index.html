@@ -255,6 +255,8 @@
         </div>
       </div>
 
+      <!-- AI deck creation is hidden for now. To re-enable, uncomment this banner;
+           Game.openAI(), the #ai-screen, and its styles are all still in place.
       <button class="ai-banner" onclick="Game.openAI()">
         <span class="ai-banner-ic">✨</span>
         <span class="ai-banner-tx">
@@ -263,6 +265,7 @@
         </span>
         <span class="ai-banner-go" aria-hidden="true">›</span>
       </button>
+      -->
 
       <div class="deck-toolbar">
         <div class="section-title">Decks</div>
@@ -490,7 +493,7 @@
         const empty = document.createElement('div');
         empty.className = 'deck-empty';
         empty.innerHTML = currentFilter === 'mine'
-          ? 'No decks of your own yet. Tap <b>✨ Create a deck with AI</b> above, or <b>＋ New Deck</b> below.'
+          ? 'No decks of your own yet. Tap <b>＋ New Deck</b> below to make one.'
           : 'No decks here yet.';
         grid.appendChild(empty);
       }
