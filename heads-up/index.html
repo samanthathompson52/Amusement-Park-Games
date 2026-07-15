@@ -138,6 +138,10 @@
     #play-screen { padding: 0; }
     .play-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; transition: background-color .15s; padding: 20px; }
     .timer-track { position: absolute; top: 0; left: 0; right: 0; height: 8px; background: var(--card-2); z-index: 3; }
+    .end-btn { position: absolute; top: calc(env(safe-area-inset-top) + 20px); left: 16px; z-index: 4; border: 1px solid var(--line); background: var(--card); color: var(--purple); font-family: inherit; font-weight: 800; font-size: 0.8rem; padding: 8px 14px; border-radius: 999px; cursor: pointer; box-shadow: 0 4px 12px rgba(60,42,99,0.12); transition: background .14s, color .14s, transform .1s; white-space: nowrap; }
+    .end-btn:active { transform: scale(0.96); }
+    .end-btn:focus-visible { outline: 3px solid var(--yellow-deep); outline-offset: 2px; }
+    .end-btn.armed { background: var(--coral-deep); color: #fff; border-color: transparent; }
     .timer-fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--green), var(--green-deep)); transition: width 1s linear, background .3s; }
     .timer-fill.low { background: linear-gradient(90deg, var(--coral), var(--coral-deep)); }
     .timer-pill { position: absolute; top: calc(env(safe-area-inset-top) + 22px); left: 50%; transform: translateX(-50%); background: var(--card); color: var(--purple); border: 1px solid var(--line); padding: 7px 20px; border-radius: 999px; font-weight: 900; font-size: 1.5rem; letter-spacing: 0.5px; font-variant-numeric: tabular-nums; box-shadow: 0 4px 12px rgba(60,42,99,0.12); z-index: 3; }
@@ -298,6 +302,7 @@
     <section id="play-screen" class="screen">
       <div class="play-wrap" id="play-wrap">
         <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
+        <button class="end-btn" id="end-btn" onclick="Game.endEarly()">✕ End</button>
         <div class="timer-pill" id="timer-pill">60</div>
         <div class="score-pill" id="score-pill">0 ✅</div>
         <div class="the-word" id="the-word">Word</div>
@@ -605,6 +610,7 @@
       $('desktop-controls').style.display = isTouch() ? 'none' : 'flex';
       $('play-hint').style.display = (settings.control === 'tap' && isTouch()) ? 'flex' : 'none';
       $('tap-zones').style.display = settings.control === 'tap' ? 'flex' : 'none';
+      resetEndBtn();
       show('play');
       resetWordBg();
       nextWord();
@@ -720,6 +726,28 @@
     }
 
     // ---- Tap zones ----
+    // ---- End the round early ----
+    let endArmed = false, endArmTimer = null;
+    function resetEndBtn() {
+      endArmed = false;
+      if (endArmTimer) { clearTimeout(endArmTimer); endArmTimer = null; }
+      const btn = $('end-btn');
+      if (btn) { btn.classList.remove('armed'); btn.textContent = '✕ End'; }
+    }
+    function endEarly() {
+      if (!running) return;
+      const btn = $('end-btn');
+      if (!endArmed) {                       // first tap: arm + ask to confirm
+        endArmed = true;
+        if (btn) { btn.classList.add('armed'); btn.textContent = 'Tap to end'; }
+        vibrate(20);
+        endArmTimer = setTimeout(resetEndBtn, 2500);   // auto-disarm if ignored
+        return;
+      }
+      resetEndBtn();                         // second tap: end now → results recap
+      endRound();
+    }
+
     function bindTap() {
       $('tap-zones').querySelectorAll('.zone').forEach(z => {
         z.addEventListener('click', () => { if (settings.control === 'tap') answer(z.dataset.act); });
@@ -729,6 +757,7 @@
         if (!running) return;
         if (e.key === 'ArrowRight') answer('correct');
         else if (e.key === 'ArrowLeft') answer('pass');
+        else if (e.key === 'Escape') endEarly();
       });
     }
 
@@ -909,7 +938,7 @@
       document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && running) requestWake(); });
     }
 
-    return { init, goHome, beginCountdown, openBuilder, saveCustom, answer, openAI, generateAIDeck };
+    return { init, goHome, beginCountdown, openBuilder, saveCustom, answer, openAI, generateAIDeck, endEarly };
   })();
 
   Game.init();
