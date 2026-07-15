@@ -19,12 +19,18 @@ Once GitHub Pages is enabled for this repo, the games are live at:
 - **Landing page:** `https://samanthathompson52.github.io/Amusement-Park-Games/`
 - **Heads Up!:** `https://samanthathompson52.github.io/Amusement-Park-Games/heads-up/`
 
-### Enable GitHub Pages
+### Enable GitHub Pages (one-time)
+
+Deployment is automated by the [`Deploy to GitHub Pages`](.github/workflows/deploy-pages.yml)
+workflow, which publishes the whole site on every push to `main`. GitHub only
+lets a repository admin turn Pages on the first time, so this one step is manual:
 
 1. Go to the repo's **Settings → Pages**.
-2. Under **Build and deployment → Source**, choose **Deploy from a branch**.
-3. Select branch **`main`** and folder **`/ (root)`**, then **Save**.
-4. Wait ~1 minute — your park is live at the URL above.
+2. Under **Build and deployment → Source**, choose **GitHub Actions**.
+
+That's it — no branch or folder to pick. Then push to `main` (or re-run the
+workflow from the **Actions** tab) and ~1 minute later your park is live at the
+URL above. Every later push to `main` redeploys automatically.
 
 > Tilt/motion controls need **HTTPS**, which GitHub Pages provides automatically.
 
