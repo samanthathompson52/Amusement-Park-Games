@@ -3,55 +3,76 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f172a" />
+  <meta name="theme-color" content="#f7f1e6" />
   <title>Amusement Park Games 🎡</title>
   <meta name="description" content="A collection of free, browser-based party games you can play right now — no install, no login." />
   <style>
+    :root {
+      color-scheme: light;
+      --plum: #3c2a63;
+      --purple: #5b3d94;
+      --lilac: #e8dff8;
+      --cream: #f7f1e6;
+      --card: #fffdf6;
+      --card-2: #efe7d6;
+      --ink: #2e2547;
+      --muted: #867b9e;
+      --line: rgba(60,42,99,0.13);
+      --yellow: #f6ce45;
+      --font: ui-rounded, 'SF Pro Rounded', 'Baloo 2', 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: radial-gradient(circle at 30% 20%, #1e293b, #0f172a 60%);
-      color: #f1f5f9; min-height: 100vh; padding: 40px 20px;
+      font-family: var(--font);
+      color: var(--ink); min-height: 100vh; padding: 44px 20px;
       display: flex; flex-direction: column; align-items: center;
+      -webkit-font-smoothing: antialiased;
+      background:
+        radial-gradient(118% 55% at 50% -8%, rgba(91,61,148,0.13), transparent 62%),
+        radial-gradient(90% 42% at 104% 110%, rgba(246,206,69,0.12), transparent 60%),
+        var(--cream);
     }
-    header { text-align: center; margin-bottom: 36px; max-width: 640px; }
-    h1 { font-size: clamp(2.2rem, 8vw, 3.4rem); font-weight: 800; letter-spacing: -1px; }
-    header p { color: #94a3b8; margin-top: 12px; font-size: 1.05rem; line-height: 1.5; }
+    header { text-align: center; margin-bottom: 38px; max-width: 640px; }
+    h1 { font-size: clamp(2.3rem, 8vw, 3.5rem); font-weight: 800; letter-spacing: -0.5px; color: var(--plum); line-height: 1.05; }
+    h1 .hl { background: linear-gradient(var(--yellow), var(--yellow)) 0 78%/100% 32% no-repeat; padding: 0 .1em; border-radius: 4px; }
+    header p { color: var(--muted); margin-top: 14px; font-size: 1.05rem; line-height: 1.5; font-weight: 500; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; width: 100%; max-width: 820px; }
     a.game {
-      text-decoration: none; color: inherit; background: #1e293b; border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 20px; padding: 24px; position: relative; overflow: hidden;
-      transition: transform .12s ease, box-shadow .12s ease; display: flex; flex-direction: column;
+      text-decoration: none; color: inherit; background: var(--card); border: 1px solid var(--line);
+      border-radius: 24px; padding: 26px; position: relative; overflow: hidden;
+      box-shadow: 0 6px 20px rgba(60,42,99,0.08);
+      transition: transform .14s ease, box-shadow .14s ease; display: flex; flex-direction: column;
     }
-    a.game:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.45); }
-    a.game .glow { position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; border-radius: 50%; opacity: .35; filter: blur(30px); }
-    a.game .emoji { font-size: 3rem; }
-    a.game h2 { font-size: 1.4rem; margin-top: 10px; }
-    a.game p { color: #94a3b8; margin-top: 6px; font-size: 0.9rem; flex: 1; }
-    a.game .play { margin-top: 16px; font-weight: 700; color: #8b5cf6; }
-    a.game.soon { opacity: .55; cursor: default; pointer-events: none; }
-    a.game.soon .play { color: #64748b; }
-    footer { color: #64748b; font-size: 0.8rem; margin-top: 40px; text-align: center; }
-    footer a { color: #94a3b8; }
+    a.game:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(60,42,99,0.16); }
+    a.game .glow { position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; border-radius: 50%; opacity: .28; filter: blur(30px); }
+    a.game .emoji { width: 62px; height: 62px; border-radius: 18px; display: grid; place-items: center; font-size: 2.4rem; background: var(--lilac); }
+    a.game h2 { font-size: 1.45rem; margin-top: 14px; font-weight: 800; color: var(--plum); }
+    a.game p { color: var(--muted); margin-top: 6px; font-size: 0.92rem; flex: 1; line-height: 1.45; font-weight: 500; }
+    a.game .play { margin-top: 18px; font-weight: 800; color: var(--purple); }
+    a.game.soon { opacity: .7; cursor: default; pointer-events: none; box-shadow: none; border-style: dashed; background: transparent; }
+    a.game.soon .emoji { background: var(--card-2); }
+    a.game.soon .play { color: var(--muted); }
+    footer { color: var(--muted); font-size: 0.82rem; margin-top: 44px; text-align: center; font-weight: 500; }
+    footer a { color: var(--purple); font-weight: 700; }
   </style>
 </head>
 <body>
   <header>
-    <h1>🎡 Amusement Park Games</h1>
+    <h1>🎡 Amusement <span class="hl">Park</span> Games</h1>
     <p>Free party games that run right in your browser. No install, no login — just open one and play.</p>
   </header>
 
   <div class="grid">
     <a class="game" href="./heads-up/">
-      <div class="glow" style="background:#8b5cf6"></div>
+      <div class="glow" style="background:#5b3d94"></div>
       <div class="emoji">🙌</div>
       <h2>Heads Up!</h2>
-      <p>Hold the phone to your forehead and guess the word. 10 ready-to-play card packs, tilt controls, build-your-own decks, and AI-generated categories.</p>
+      <p>Hold the phone to your forehead and guess the word. Ready-to-play card packs, AI-generated categories, tilt controls, and build-your-own decks.</p>
       <div class="play">Play now →</div>
     </a>
 
     <a class="game soon">
-      <div class="glow" style="background:#22c55e"></div>
+      <div class="glow" style="background:#f6ce45"></div>
       <div class="emoji">✨</div>
       <h2>More coming soon</h2>
       <p>New games get added to the park over time. Got an idea? Open an issue.</p>
