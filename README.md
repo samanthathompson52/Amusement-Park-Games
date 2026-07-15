@@ -8,7 +8,8 @@ no build step — open one and play. Built to be hosted anywhere static files li
 
 | Game | Description | Play |
 | --- | --- | --- |
-| 🙌 **[Heads Up!](./heads-up/)** | Hold the phone to your forehead and guess the word from your friends' clues. Ships with 10 ready-to-play card packs (338+ cards), tilt controls, a timer, build-your-own decks, and ✨ AI-generated decks (describe any category and Claude writes the cards). | [`/heads-up/`](./heads-up/) |
+| 🙌 **[Heads Up!](./heads-up/)** | Hold the phone to your forehead and guess the word from your friends' clues. Ships with 10 ready-to-play card packs (338+ cards), tilt controls, a timer, and build-your-own decks. | [`/heads-up/`](./heads-up/) |
+| 🎯 **[Spectrum](./spectrum/)** | A pass-and-play take on *Wavelength*. One player gives a one-word clue for a hidden point on a spectrum; everyone else moves a dial to guess. Teams mode with bonus bets or co-op, a draggable semicircular dial, and 56 spectrum cards. | [`/spectrum/`](./spectrum/) |
 
 _More games get added to the park over time._
 
@@ -18,6 +19,7 @@ Once GitHub Pages is enabled for this repo, the games are live at:
 
 - **Landing page:** `https://samanthathompson52.github.io/Amusement-Park-Games/`
 - **Heads Up!:** `https://samanthathompson52.github.io/Amusement-Park-Games/heads-up/`
+- **Spectrum:** `https://samanthathompson52.github.io/Amusement-Park-Games/spectrum/`
 
 ### Enable GitHub Pages (one-time)
 

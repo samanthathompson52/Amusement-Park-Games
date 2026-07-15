@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f1e6" />
+  <title>Spectrum — Party Guessing Game</title>
+  <meta name="description" content="A free pass-and-play party game inspired by Wavelength. One player gives a clue on a hidden spectrum; the group dials in the guess. No install, no login." />
+  <style>
+    :root {
+      color-scheme: light;
+      --plum: #3c2a63;
+      --purple: #5b3d94;
+      --purple-soft: #7d61c4;
+      --lilac: #e8dff8;
+      --cream: #f7f1e6;
+      --card: #fffdf6;
+      --card-2: #efe7d6;
+      --ink: #2e2547;
+      --muted: #867b9e;
+      --line: rgba(60,42,99,0.13);
+      --yellow: #f6ce45;
+      --yellow-deep: #d99a13;
+      --green: #7cc47f;
+      --green-deep: #4fa863;
+      --coral: #f18a5d;
+      --coral-deep: #e0693f;
+      --radius: 22px;
+      --font: ui-rounded, 'SF Pro Rounded', 'Baloo 2', 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font);
+      color: var(--ink);
+      overflow: hidden;
+      user-select: none; -webkit-user-select: none;
+      -webkit-font-smoothing: antialiased;
+      background:
+        radial-gradient(118% 55% at 50% -8%, rgba(91,61,148,0.13), transparent 62%),
+        radial-gradient(90% 42% at 104% 110%, rgba(246,206,69,0.12), transparent 60%),
+        var(--cream);
+    }
+    #app { height: 100dvh; display: flex; flex-direction: column; }
+    .screen { flex: 1; display: none; flex-direction: column; overflow-y: auto; padding: calc(env(safe-area-inset-top) + 12px) 20px calc(env(safe-area-inset-bottom) + 14px); }
+    .screen.active { display: flex; animation: screenIn .32s cubic-bezier(.2,.8,.25,1); }
+    @keyframes screenIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    .center-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 18px; }
+    .howto { max-width: 380px; color: var(--muted); line-height: 1.6; font-size: 0.98rem; font-weight: 500; }
+    .howto b { color: var(--ink); font-weight: 800; }
+
+    /* ---------- Buttons ---------- */
+    .btn { border: none; border-radius: 999px; padding: 15px 30px; font-size: 1.05rem; font-weight: 800; cursor: pointer; color: #fff; background: var(--purple); box-shadow: 0 8px 20px rgba(91,61,148,0.3); transition: transform .12s ease, box-shadow .12s ease, filter .12s ease; font-family: inherit; }
+    .btn:hover { filter: brightness(1.05); box-shadow: 0 12px 26px rgba(91,61,148,0.4); }
+    .btn:active { transform: translateY(1px) scale(0.99); }
+    .btn.big { padding: 17px 46px; font-size: 1.2rem; }
+    .btn.ghost { background: var(--card); border: 1.5px solid var(--line); color: var(--purple); box-shadow: none; }
+    .btn.ghost:hover { filter: none; background: var(--lilac); box-shadow: none; }
+    .btn:disabled { opacity: .5; cursor: default; filter: none; box-shadow: none; }
+    .btn:focus-visible, .seg button:focus-visible { outline: 3px solid var(--yellow-deep); outline-offset: 2px; }
+    .top-back { align-self: flex-start; padding: 11px 18px; font-size: 0.95rem; }
+    .results-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; padding: 6px 0 20px; }
+
+    /* ---------- Segmented pills ---------- */
+    .seg { display: inline-flex; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 5px; gap: 4px; box-shadow: 0 3px 10px rgba(60,42,99,0.07); }
+    .seg button { border: none; background: transparent; color: var(--muted); font-weight: 700; padding: 9px 16px; border-radius: 999px; cursor: pointer; font-size: 0.9rem; transition: color .18s, background .18s, box-shadow .18s; font-family: inherit; }
+    .seg button.on { background: var(--purple); color: #fff; box-shadow: 0 5px 14px rgba(91,61,148,0.34); }
+    .seg-label { font-size: 0.66rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1.4px; font-weight: 800; padding: 0 6px 0 12px; }
+
+    /* ---------- Home ---------- */
+    .home-head { text-align: center; padding: 26px 0 6px; }
+    .home-head h1 { font-size: clamp(2.6rem, 10vw, 3.8rem); font-weight: 800; color: var(--plum); letter-spacing: -0.5px; line-height: 1; }
+    .spectrum-bar { height: 10px; width: min(280px, 70vw); margin: 14px auto 0; border-radius: 999px; background: linear-gradient(90deg, #7b5fc0, #b48fd8, var(--yellow), var(--coral)); box-shadow: 0 4px 12px rgba(60,42,99,0.18); }
+    .home-head p { color: var(--muted); margin: 16px auto 0; font-size: 1rem; max-width: 420px; line-height: 1.5; font-weight: 500; }
+    .settings { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 22px 0 8px; }
+    details.howto { max-width: 420px; width: 100%; margin: 4px auto 0; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px 18px; text-align: left; }
+    details.howto summary { cursor: pointer; font-weight: 800; color: var(--purple); list-style: none; }
+    details.howto summary::-webkit-details-marker { display: none; }
+    details.howto summary::before { content: '▸ '; }
+    details.howto[open] summary::before { content: '▾ '; }
+    details.howto ol { margin: 10px 0 0 18px; color: var(--muted); font-size: 0.9rem; line-height: 1.7; font-weight: 500; }
+    .home-cta { display: flex; justify-content: center; padding: 8px 0 6px; }
+    .footer-credit { text-align: center; color: var(--muted); font-size: 0.76rem; padding: 12px 0 6px; font-weight: 500; }
+
+    /* ---------- Dial ---------- */
+    .dial-slot { width: 100%; max-width: 420px; margin: 4px auto; }
+    .dial-wrap { width: 100%; touch-action: none; }
+    .dial-svg { width: 100%; height: auto; display: block; overflow: visible; }
+    .dial-track { fill: none; stroke: url(#specGrad); stroke-width: 22; stroke-linecap: round; }
+    .dial-band { fill: none; stroke-width: 30; stroke-linecap: butt; }
+    .dial-band.b2 { stroke: var(--purple-soft); }
+    .dial-band.b3 { stroke: var(--green); }
+    .dial-band.b4 { stroke: var(--yellow); }
+    .dial-target { transition: opacity .35s ease; }
+    .dial-needle { stroke: var(--ink); stroke-width: 5; stroke-linecap: round; }
+    .dial-hub { fill: var(--ink); }
+    .dial-hub-dot { fill: var(--card); }
+    .poles { display: flex; justify-content: space-between; gap: 10px; margin-top: 2px; }
+    .pole { flex: 1; font-weight: 800; color: var(--ink); font-size: 1rem; padding: 8px 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); line-height: 1.2; }
+    .pole.pole-l { text-align: left; }
+    .pole.pole-r { text-align: right; }
+
+    /* ---------- Turn banner / scores ---------- */
+    .turn-banner { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 4px 0 8px; }
+    .score-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; padding: 4px 0; }
+    .chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; border-radius: 999px; font-weight: 800; font-size: 0.95rem; border: 2px solid transparent; background: var(--card); box-shadow: 0 2px 8px rgba(60,42,99,0.06); font-variant-numeric: tabular-nums; }
+    .chip .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .chip.violet .dot { background: var(--purple); }
+    .chip.gold .dot { background: var(--yellow-deep); }
+    .chip.party .dot { background: var(--green-deep); }
+    .chip.on { border-color: var(--purple); background: var(--lilac); }
+    .chip.gold.on { border-color: var(--yellow-deep); background: #fbf1cf; }
+    .turn-note { font-size: 0.9rem; color: var(--muted); font-weight: 700; width: 100%; text-align: center; }
+
+    /* ---------- Pass / bet / reveal / gameover ---------- */
+    .big-emoji { font-size: 3.6rem; filter: drop-shadow(0 8px 22px rgba(60,42,99,0.16)); }
+    .pass-title, .center-col h2 { font-size: 1.7rem; color: var(--plum); font-weight: 800; letter-spacing: -0.3px; }
+    .bet-row { display: flex; gap: 14px; width: 100%; max-width: 380px; }
+    .bet-btn { flex: 1; padding: 22px 12px; font-size: 1.15rem; }
+    .reveal-pts { font-size: 3.4rem; font-weight: 900; letter-spacing: -1px; color: var(--purple); line-height: 1; font-variant-numeric: tabular-nums; }
+    .reveal-sub { color: var(--muted); font-weight: 700; font-size: 0.98rem; max-width: 360px; }
+    #go-rating { font-weight: 800; color: var(--plum); font-size: 1.1rem; }
+
+    .rotate-tip { position: fixed; inset: 0; background: var(--cream); color: var(--ink); display: none; align-items: center; justify-content: center; text-align: center; padding: 30px; z-index: 50; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- HOME -->
+    <section id="home-screen" class="screen active">
+      <div class="home-head">
+        <h1>Spectrum</h1>
+        <div class="spectrum-bar"></div>
+        <p>Read the room. One player gives a clue on a hidden spectrum — everyone else dials in the guess. Pass one phone around.</p>
+      </div>
+      <div class="settings">
+        <div class="seg" id="mode-seg">
+          <span class="seg-label">Mode</span>
+          <button data-mode="teams" class="on">Teams</button>
+          <button data-mode="party">Party</button>
+        </div>
+        <div class="seg" id="target-seg">
+          <span class="seg-label">Win at</span>
+          <button data-target="7">7</button>
+          <button data-target="10" class="on">10</button>
+          <button data-target="15">15</button>
+        </div>
+        <div class="seg" id="rounds-seg" style="display:none">
+          <span class="seg-label">Rounds</span>
+          <button data-rounds="5">5</button>
+          <button data-rounds="7" class="on">7</button>
+          <button data-rounds="10">10</button>
+        </div>
+      </div>
+      <details class="howto">
+        <summary>How to play</summary>
+        <ol>
+          <li>Pass the phone to the <b>Psychic</b>. Only they look — they see a hidden target zone on the spectrum.</li>
+          <li>The Psychic says <b>one clue out loud</b> that points to the zone (no touching the dial).</li>
+          <li>Everyone else discusses and <b>drags the needle</b> to where they think it is.</li>
+          <li>Score by how close you land: bullseye <b>4</b>, then <b>3</b>, <b>2</b>, or <b>0</b>.</li>
+          <li><b>Teams:</b> the other team then bets Left/Right of the guess for a bonus point.</li>
+        </ol>
+      </details>
+      <div class="home-cta"><button class="btn big" onclick="Game.start()">Start game</button></div>
+      <div class="footer-credit">Pass &amp; play • 2–12 players • Inspired by Wavelength</div>
+    </section>
+
+    <!-- PASS (privacy hand-off) -->
+    <section id="pass-screen" class="screen">
+      <button class="btn ghost top-back" onclick="Game.goHome()">‹ Home</button>
+      <div class="center-col">
+        <div class="big-emoji">🤫</div>
+        <h2 id="pass-title">Pass to the Psychic</h2>
+        <p class="howto" id="pass-sub"></p>
+        <button class="btn big" onclick="Game.revealTarget()">Reveal the target</button>
+      </div>
+    </section>
+
+    <!-- CLUE (psychic sees target) -->
+    <section id="clue-screen" class="screen">
+      <div class="turn-banner" id="clue-banner"></div>
+      <div class="center-col">
+        <p class="howto">🧠 Psychic only! Give a <b>one-word clue</b> pointing to the highlighted zone — say it out loud. Don't touch the dial.</p>
+        <div class="dial-slot" id="clue-dial"></div>
+        <button class="btn big" onclick="Game.toGuess()">Hide &amp; pass ›</button>
+      </div>
+    </section>
+
+    <!-- GUESS (group dials in) -->
+    <section id="guess-screen" class="screen">
+      <div class="turn-banner" id="guess-banner"></div>
+      <div class="center-col">
+        <p class="howto">Discuss the clue, then <b>drag the needle</b> to where you think the target is.</p>
+        <div class="dial-slot" id="guess-dial"></div>
+        <button class="btn big" onclick="Game.lockGuess()">Lock in guess</button>
+      </div>
+    </section>
+
+    <!-- BET (teams only) -->
+    <section id="bet-screen" class="screen">
+      <div class="center-col">
+        <div class="big-emoji">🎲</div>
+        <h2 id="bet-title">Place your bet</h2>
+        <p class="howto">Is the <b>real target</b> to the left or right of their guess? Guess right for a bonus point.</p>
+        <div class="bet-row">
+          <button class="btn ghost bet-btn" onclick="Game.placeBet('left')">← Left</button>
+          <button class="btn ghost bet-btn" onclick="Game.placeBet('right')">Right →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- REVEAL (score) -->
+    <section id="reveal-screen" class="screen">
+      <div class="center-col">
+        <div class="reveal-pts" id="reveal-pts">+0</div>
+        <div class="reveal-sub" id="reveal-sub"></div>
+        <div class="dial-slot" id="reveal-dial"></div>
+        <div class="score-row" id="reveal-scores"></div>
+        <div class="results-actions">
+          <button class="btn" onclick="Game.nextRound()">Next round</button>
+          <button class="btn ghost" onclick="Game.goHome()">End game</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAME OVER -->
+    <section id="gameover-screen" class="screen">
+      <div class="center-col">
+        <div class="big-emoji" id="go-emoji">🏆</div>
+        <h2 id="go-title"></h2>
+        <div class="score-row" id="go-scores"></div>
+        <div id="go-rating" class="howto"></div>
+        <div class="results-actions">
+          <button class="btn" onclick="Game.start()">Play again</button>
+          <button class="btn ghost" onclick="Game.goHome()">Home</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="rotate-tip" id="rotate-tip">
+    <div><div style="font-size:3rem">🔄</div><p style="margin-top:10px">Rotate back to portrait to keep playing.</p></div>
+  </div>
+
+  <script src="cards.js"></script>
+  <script>
+  const Game = (() => {
+    const $ = id => document.getElementById(id);
+    const NS = 'http://www.w3.org/2000/svg';
+    const screens = ['home', 'pass', 'clue', 'guess', 'bet', 'reveal', 'gameover'];
+    const TEAMS = [
+      { name: 'Team Violet', cls: 'violet' },
+      { name: 'Team Gold', cls: 'gold' }
+    ];
+
+    // ---- State ----
+    let cfg = { mode: 'teams', target: 10, rounds: 7 };
+    let deck = [], card = null;
+    let tc = 50;            // target center (0..100)
+    let t = 50;             // needle position (0..100)
+    let tGuess = null, bet = null;
+    let round = 0, activeTeam = 0;
+    let scores = [0, 0], partyScore = 0;
+    let interactive = false, currentScreen = 'home';
+    let wakeLock = null;
+
+    // ---- Persistence ----
+    const SET_KEY = 'spectrum_settings_v1';
+    function loadSettings() { try { const s = JSON.parse(localStorage.getItem(SET_KEY)); if (s) cfg = { ...cfg, ...s }; } catch {} }
+    function persist() { try { localStorage.setItem(SET_KEY, JSON.stringify(cfg)); } catch {} }
+
+    // ---- Screen router ----
+    function show(name) {
+      currentScreen = name;
+      screens.forEach(s => $(s + '-screen').classList.toggle('active', s === name));
+    }
+
+    // ---- Dial geometry ----
+    const CX = 150, CY = 158, R = 130;
+    const rad = d => d * Math.PI / 180;
+    const tToAngle = v => 180 * (1 - v / 100);           // 0→180°(left), 100→0°(right)
+    const ptR = (a, r) => [CX + r * Math.cos(rad(a)), CY - r * Math.sin(rad(a))];
+    function arcPath(lo, hi, r = R) {
+      const [x1, y1] = ptR(tToAngle(lo), r), [x2, y2] = ptR(tToAngle(hi), r);
+      return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 0 0 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+    }
+
+    let dialWrap, dialSvg, targetG, needleLine, dragging = false;
+    function buildDial() {
+      dialWrap = document.createElement('div');
+      dialWrap.className = 'dial-wrap';
+      const svg = document.createElementNS(NS, 'svg');
+      svg.setAttribute('viewBox', '0 0 300 172');
+      svg.setAttribute('class', 'dial-svg');
+      svg.innerHTML =
+        `<defs><linearGradient id="specGrad" x1="0" y1="0" x2="1" y2="0">
+           <stop offset="0" stop-color="#9c86d6"/><stop offset="0.5" stop-color="#d8c7c0"/><stop offset="1" stop-color="#f0b071"/>
+         </linearGradient></defs>` +
+        `<path class="dial-track" d="${arcPath(0, 100)}"></path>` +
+        `<g class="dial-target"></g>` +
+        `<line class="dial-needle" x1="${CX}" y1="${CY}" x2="${CX}" y2="${CY - R + 8}"></line>` +
+        `<circle class="dial-hub" cx="${CX}" cy="${CY}" r="10"></circle>` +
+        `<circle class="dial-hub-dot" cx="${CX}" cy="${CY}" r="3.5"></circle>`;
+      targetG = svg.querySelector('.dial-target');
+      needleLine = svg.querySelector('.dial-needle');
+      dialSvg = svg;
+
+      const onMove = e => { if (interactive && dragging) { setT(clientToT(e)); e.preventDefault(); } };
+      svg.addEventListener('pointerdown', e => { if (!interactive) return; dragging = true; try { svg.setPointerCapture(e.pointerId); } catch {} setT(clientToT(e)); e.preventDefault(); });
+      svg.addEventListener('pointermove', onMove);
+      svg.addEventListener('pointerup', () => { dragging = false; });
+      svg.addEventListener('pointercancel', () => { dragging = false; });
+
+      const poles = document.createElement('div');
+      poles.className = 'poles';
+      poles.innerHTML = `<div class="pole pole-l" id="pole-l"></div><div class="pole pole-r" id="pole-r"></div>`;
+      dialWrap.appendChild(svg);
+      dialWrap.appendChild(poles);
+    }
+
+    function clientToT(e) {
+      const rct = dialSvg.getBoundingClientRect();
+      const px = rct.left + (CX / 300) * rct.width;
+      const py = rct.top + (CY / 172) * rct.height;
+      let a = Math.atan2(-(e.clientY - py), e.clientX - px) * 180 / Math.PI; // 0=right,90=up,180=left
+      if (a < 0) a = (e.clientX - px >= 0) ? 0 : 180;
+      a = Math.max(0, Math.min(180, a));
+      return (1 - a / 180) * 100;
+    }
+
+    function setT(v) { t = Math.max(0, Math.min(100, v)); updateNeedle(); }
+    function updateNeedle() {
+      const [x2, y2] = ptR(tToAngle(t), R - 8);
+      needleLine.setAttribute('x2', x2.toFixed(2));
+      needleLine.setAttribute('y2', y2.toFixed(2));
+      dialWrap.dataset.t = Math.round(t);
+    }
+    function renderBands() {
+      targetG.textContent = '';
+      const bands = [[tc - 16, tc - 10, 'b2'], [tc - 10, tc - 4, 'b3'], [tc - 4, tc + 4, 'b4'], [tc + 4, tc + 10, 'b3'], [tc + 10, tc + 16, 'b2']];
+      bands.forEach(([lo, hi, cls]) => {
+        lo = Math.max(0, lo); hi = Math.min(100, hi);
+        if (hi - lo <= 0.1) return;
+        const p = document.createElementNS(NS, 'path');
+        p.setAttribute('d', arcPath(lo, hi));
+        p.setAttribute('class', 'dial-band ' + cls);
+        targetG.appendChild(p);
+      });
+      dialWrap.dataset.tc = Math.round(tc);
+    }
+    // Mount the (single) dial into a screen slot with the right visibility.
+    function mountDial(slotId, o) {
+      $(slotId).appendChild(dialWrap);
+      interactive = !!o.interactive;
+      targetG.style.display = o.target ? '' : 'none';
+      const needleVis = o.needle ? '' : 'none';
+      needleLine.style.display = needleVis;
+      if (o.target) renderBands();
+      updateNeedle();
+      $('pole-l').textContent = card ? card.left : '';
+      $('pole-r').textContent = card ? card.right : '';
+    }
+
+    // ---- Score / banner rendering ----
+    function chip(i, active) {
+      return `<span class="chip ${TEAMS[i].cls}${active ? ' on' : ''}"><span class="dot"></span>${TEAMS[i].name} · ${scores[i]}</span>`;
+    }
+    function renderBanner(el) {
+      if (cfg.mode === 'teams') {
+        el.innerHTML = chip(0, activeTeam === 0) + chip(1, activeTeam === 1) +
+          `<div class="turn-note">${TEAMS[activeTeam].name} is guessing</div>`;
+      } else {
+        el.innerHTML = `<span class="chip party"><span class="dot"></span>Score · ${partyScore}</span>` +
+          `<div class="turn-note">Round ${round} of ${cfg.rounds}</div>`;
+      }
+    }
+    function renderScores(el, highlight) {
+      if (cfg.mode === 'teams') el.innerHTML = chip(0, highlight === 0) + chip(1, highlight === 1);
+      else el.innerHTML = `<span class="chip party"><span class="dot"></span>Total · ${partyScore}</span>`;
+    }
+
+    // ---- Settings UI ----
+    function bindSettings() {
+      $('mode-seg').querySelectorAll('button[data-mode]').forEach(b => {
+        b.classList.toggle('on', b.dataset.mode === cfg.mode);
+        b.onclick = () => {
+          cfg.mode = b.dataset.mode; persist();
+          $('mode-seg').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+          $('target-seg').style.display = cfg.mode === 'teams' ? '' : 'none';
+          $('rounds-seg').style.display = cfg.mode === 'party' ? '' : 'none';
+        };
+      });
+      $('target-seg').querySelectorAll('button[data-target]').forEach(b => {
+        b.classList.toggle('on', +b.dataset.target === cfg.target);
+        b.onclick = () => { cfg.target = +b.dataset.target; persist(); $('target-seg').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); };
+      });
+      $('rounds-seg').querySelectorAll('button[data-rounds]').forEach(b => {
+        b.classList.toggle('on', +b.dataset.rounds === cfg.rounds);
+        b.onclick = () => { cfg.rounds = +b.dataset.rounds; persist(); $('rounds-seg').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); };
+      });
+      $('target-seg').style.display = cfg.mode === 'teams' ? '' : 'none';
+      $('rounds-seg').style.display = cfg.mode === 'party' ? '' : 'none';
+    }
+
+    // ---- Game flow ----
+    function start() {
+      scores = [0, 0]; partyScore = 0; round = 0; activeTeam = 0;
+      deck = shuffle([...(window.SPECTRUM_CARDS || [])]);
+      requestWake();
+      newRound();
+    }
+    function newRound() {
+      round++;
+      if (deck.length === 0) deck = shuffle([...(window.SPECTRUM_CARDS || [])]);
+      card = deck.pop() || { left: 'Left', right: 'Right' };
+      tc = Math.round(16 + Math.random() * 68);   // 16..84 keeps the band on-arc
+      t = 50; tGuess = null; bet = null;
+      if (cfg.mode === 'teams') activeTeam = (round - 1) % 2;
+      const who = cfg.mode === 'teams'
+        ? `<b>${TEAMS[activeTeam].name}'s</b> Psychic`
+        : `the <b>next Psychic</b>`;
+      $('pass-title').textContent = cfg.mode === 'teams' ? `${TEAMS[activeTeam].name}'s turn` : `Round ${round} of ${cfg.rounds}`;
+      $('pass-sub').innerHTML = `Hand the phone to ${who}. Only they should peek at the next screen.`;
+      show('pass');
+    }
+    function revealTarget() {
+      mountDial('clue-dial', { target: true, needle: false, interactive: false });
+      renderBanner($('clue-banner'));
+      beep(620, 0.07);
+      show('clue');
+    }
+    function toGuess() {
+      t = 50;
+      mountDial('guess-dial', { target: false, needle: true, interactive: true });
+      renderBanner($('guess-banner'));
+      show('guess');
+    }
+    function lockGuess() {
+      tGuess = Math.round(t);
+      if (cfg.mode === 'teams') {
+        $('bet-title').textContent = `${TEAMS[1 - activeTeam].name}, place your bet`;
+        show('bet');
+      } else {
+        resolveRound();
+      }
+    }
+    function placeBet(dir) { bet = dir; resolveRound(); }
+
+    function pointsFor(d) { return d <= 4 ? 4 : d <= 10 ? 3 : d <= 16 ? 2 : 0; }
+    function resolveRound() {
+      const d = Math.abs(tGuess - tc);
+      const pts = pointsFor(d);
+      let bonus = 0, betTeam = 1 - activeTeam;
+      if (cfg.mode === 'teams') {
+        scores[activeTeam] += pts;
+        if (bet) {
+          const correct = (bet === 'left' && tc < tGuess) || (bet === 'right' && tc > tGuess);
+          if (correct) { bonus = 1; scores[betTeam] += 1; }
+        }
+      } else {
+        partyScore += pts;
+      }
+      // Reveal
+      mountDial('reveal-dial', { target: true, needle: true, interactive: false });
+      $('reveal-pts').textContent = '+' + pts;
+      const label = pts === 4 ? '🎯 Bullseye!' : pts === 3 ? '🔥 So close!' : pts === 2 ? '👍 Not bad' : '😬 Way off';
+      let sub = `${label} — <b>${TEAMS[activeTeam] && cfg.mode === 'teams' ? TEAMS[activeTeam].name : 'You'}</b> scored <b>+${pts}</b>.`;
+      if (cfg.mode === 'teams' && bet) {
+        sub += bonus
+          ? ` ${TEAMS[betTeam].name} nailed the ${bet} bet — <b>+1</b>!`
+          : ` ${TEAMS[betTeam].name} bet ${bet} — no bonus.`;
+      }
+      $('reveal-sub').innerHTML = sub;
+      renderScores($('reveal-scores'), cfg.mode === 'teams' ? activeTeam : -1);
+      beep(pts === 4 ? 880 : pts === 3 ? 720 : pts === 2 ? 560 : 300, 0.12);
+      vibrate(pts >= 3 ? [40, 40, 40] : 30);
+      show('reveal');
+    }
+    function nextRound() {
+      if (cfg.mode === 'teams') {
+        if (Math.max(scores[0], scores[1]) >= cfg.target && scores[0] !== scores[1]) return gameOver();
+      } else if (round >= cfg.rounds) {
+        return gameOver();
+      }
+      newRound();
+    }
+    function gameOver() {
+      releaseWake();
+      if (cfg.mode === 'teams') {
+        const w = scores[0] >= scores[1] ? 0 : 1;
+        $('go-emoji').textContent = '🏆';
+        $('go-title').textContent = `${TEAMS[w].name} wins!`;
+        renderScores($('go-scores'), w);
+        $('go-rating').textContent = '';
+      } else {
+        const max = cfg.rounds * 4, pct = partyScore / max;
+        const r = pct >= 0.85 ? '🧠 Telepathic!' : pct >= 0.65 ? '📡 On the same wavelength' : pct >= 0.45 ? '🙂 Getting warmer' : '🎯 Keep tuning';
+        $('go-emoji').textContent = '📻';
+        $('go-title').textContent = 'Nice tuning!';
+        $('go-scores').innerHTML = `<span class="chip party"><span class="dot"></span>${partyScore} / ${max}</span>`;
+        $('go-rating').textContent = r;
+      }
+      beep(660, 0.3); vibrate([80, 60, 80]);
+      show('gameover');
+    }
+    function goHome() { releaseWake(); show('home'); }
+
+    // ---- Helpers ----
+    function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+    let audioCtx = null;
+    function beep(freq, dur) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.frequency.value = freq; o.type = 'sine';
+        o.connect(g); g.connect(audioCtx.destination);
+        g.gain.setValueAtTime(0.14, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+        o.start(); o.stop(audioCtx.currentTime + dur);
+      } catch {}
+    }
+    function vibrate(p) { try { navigator.vibrate && navigator.vibrate(p); } catch {} }
+    async function requestWake() { try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch {} }
+    function releaseWake() { try { wakeLock && wakeLock.release(); wakeLock = null; } catch {} }
+
+    // ---- Init ----
+    function init() {
+      loadSettings();
+      buildDial();
+      bindSettings();
+      window.addEventListener('keydown', e => {
+        if (currentScreen === 'guess' && interactive) {
+          if (e.key === 'ArrowLeft') { setT(t - (e.shiftKey ? 5 : 1)); e.preventDefault(); }
+          else if (e.key === 'ArrowRight') { setT(t + (e.shiftKey ? 5 : 1)); e.preventDefault(); }
+          else if (e.key === 'Enter') { lockGuess(); }
+        }
+      });
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && (currentScreen !== 'home' && currentScreen !== 'gameover')) requestWake(); });
+    }
+
+    return { init, start, goHome, revealTarget, toGuess, lockGuess, placeBet, nextRound };
+  })();
+
+  Game.init();
+  </script>
+</body>
+</html>
