@@ -1,0 +1,15 @@
+{
+  "name": "Amusement Park Games",
+  "short_name": "Park Games",
+  "description": "Free single-phone party games you can install and play offline — Heads Up!, Spectrum, Bomb Party, and Would You Rather.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f1e6",
+  "theme_color": "#f7f1e6",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

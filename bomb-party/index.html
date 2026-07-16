@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f1e6" />
+  <title>Bomb Party — Pass-and-Play Word Game</title>
+  <meta name="description" content="A free single-phone party game. Say a word that fits the prompt and pass fast — whoever's holding the phone when the bomb goes off loses. No install, no login." />
+  <link rel="manifest" href="../manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Bomb Party" />
+  <link rel="apple-touch-icon" href="../icon.svg" />
+  <style>
+    :root {
+      color-scheme: light;
+      --plum: #3c2a63;
+      --purple: #5b3d94;
+      --purple-soft: #7d61c4;
+      --lilac: #e8dff8;
+      --cream: #f7f1e6;
+      --card: #fffdf6;
+      --card-2: #efe7d6;
+      --ink: #2e2547;
+      --muted: #867b9e;
+      --line: rgba(60,42,99,0.13);
+      --yellow: #f6ce45;
+      --yellow-deep: #d99a13;
+      --green: #7cc47f;
+      --green-deep: #4fa863;
+      --coral: #f18a5d;
+      --coral-deep: #e0693f;
+      --radius: 22px;
+      --font: ui-rounded, 'SF Pro Rounded', 'Baloo 2', 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font);
+      color: var(--ink);
+      overflow: hidden;
+      user-select: none; -webkit-user-select: none;
+      -webkit-font-smoothing: antialiased;
+      background:
+        radial-gradient(118% 55% at 50% -8%, rgba(91,61,148,0.13), transparent 62%),
+        radial-gradient(90% 42% at 104% 110%, rgba(246,206,69,0.12), transparent 60%),
+        var(--cream);
+    }
+    #app { height: 100dvh; display: flex; flex-direction: column; }
+    .screen { flex: 1; display: none; flex-direction: column; overflow-y: auto; padding: calc(env(safe-area-inset-top) + 12px) 20px calc(env(safe-area-inset-bottom) + 14px); }
+    .screen.active { display: flex; animation: screenIn .32s cubic-bezier(.2,.8,.25,1); }
+    @keyframes screenIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    .center-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 18px; }
+    .howto { max-width: 380px; color: var(--muted); line-height: 1.6; font-size: 0.98rem; font-weight: 500; }
+    .howto b { color: var(--ink); font-weight: 800; }
+
+    /* ---------- Buttons ---------- */
+    .btn { border: none; border-radius: 999px; padding: 15px 30px; font-size: 1.05rem; font-weight: 800; cursor: pointer; color: #fff; background: var(--purple); box-shadow: 0 8px 20px rgba(91,61,148,0.3); transition: transform .12s ease, box-shadow .12s ease, filter .12s ease; font-family: inherit; }
+    .btn:hover { filter: brightness(1.05); box-shadow: 0 12px 26px rgba(91,61,148,0.4); }
+    .btn:active { transform: translateY(1px) scale(0.99); }
+    .btn.big { padding: 17px 46px; font-size: 1.2rem; }
+    .btn.ghost { background: var(--card); border: 1.5px solid var(--line); color: var(--purple); box-shadow: none; }
+    .btn.ghost:hover { filter: none; background: var(--lilac); box-shadow: none; }
+    .btn.danger { background: var(--coral-deep); box-shadow: 0 8px 20px rgba(224,105,63,0.34); }
+    .btn:disabled { opacity: .5; cursor: default; filter: none; box-shadow: none; }
+    .btn:focus-visible, .seg button:focus-visible { outline: 3px solid var(--yellow-deep); outline-offset: 2px; }
+    .top-back { align-self: flex-start; padding: 11px 18px; font-size: 0.95rem; text-decoration: none; }
+    .results-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; padding: 6px 0 20px; }
+
+    /* ---------- Segmented pills ---------- */
+    .seg { display: inline-flex; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 5px; gap: 4px; box-shadow: 0 3px 10px rgba(60,42,99,0.07); }
+    .seg button { border: none; background: transparent; color: var(--muted); font-weight: 700; padding: 9px 16px; border-radius: 999px; cursor: pointer; font-size: 0.9rem; transition: color .18s, background .18s, box-shadow .18s; font-family: inherit; }
+    .seg button.on { background: var(--purple); color: #fff; box-shadow: 0 5px 14px rgba(91,61,148,0.34); }
+    .seg-label { font-size: 0.66rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1.4px; font-weight: 800; padding: 0 6px 0 12px; }
+
+    /* ---------- Home ---------- */
+    .home-head { text-align: center; padding: 26px 0 6px; }
+    .home-head h1 { font-size: clamp(2.5rem, 9.5vw, 3.7rem); font-weight: 800; color: var(--plum); letter-spacing: -0.5px; line-height: 1; }
+    .home-head h1 .hl { background: linear-gradient(var(--coral), var(--coral)) 0 78%/100% 32% no-repeat; padding: 0 .12em; border-radius: 4px; color: #fff; }
+    .home-head p { color: var(--muted); margin: 16px auto 0; font-size: 1rem; max-width: 420px; line-height: 1.5; font-weight: 500; }
+    .settings { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 22px 0 8px; }
+    details.howto { max-width: 420px; width: 100%; margin: 4px auto 0; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px 18px; text-align: left; }
+    details.howto summary { cursor: pointer; font-weight: 800; color: var(--purple); list-style: none; }
+    details.howto summary::-webkit-details-marker { display: none; }
+    details.howto summary::before { content: '▸ '; }
+    details.howto[open] summary::before { content: '▾ '; }
+    details.howto ol { margin: 10px 0 0 18px; color: var(--muted); font-size: 0.9rem; line-height: 1.7; font-weight: 500; }
+    .home-cta { display: flex; justify-content: center; padding: 8px 0 6px; }
+    .footer-credit { text-align: center; color: var(--muted); font-size: 0.76rem; padding: 12px 0 6px; font-weight: 500; }
+
+    /* ---------- Play ---------- */
+    .play-top { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 2px 0 4px; }
+    .pill-note { font-size: 0.82rem; color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+    .prompt-label { font-size: 0.8rem; color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1.6px; }
+    .prompt-card {
+      background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+      box-shadow: 0 10px 30px rgba(60,42,99,0.10); padding: 26px 26px; min-width: min(320px, 86vw); max-width: 440px;
+    }
+    .prompt-main { font-size: clamp(2.1rem, 9vw, 3rem); font-weight: 900; color: var(--plum); letter-spacing: 0.5px; line-height: 1.05; }
+    .prompt-main.frag { text-transform: uppercase; letter-spacing: 3px; }
+    .prompt-hint { color: var(--muted); font-weight: 700; font-size: 0.92rem; margin-top: 8px; }
+    .bomb { font-size: 4.6rem; line-height: 1; filter: drop-shadow(0 10px 22px rgba(224,105,63,0.30)); will-change: transform; }
+    .play-hint { color: var(--muted); font-weight: 700; font-size: 0.95rem; }
+    .pass-btn { padding: 20px 60px; font-size: 1.35rem; }
+
+    /* ---------- Boom ---------- */
+    .big-emoji { font-size: 4.2rem; filter: drop-shadow(0 8px 22px rgba(224,105,63,0.24)); }
+    .center-col h2 { font-size: 1.9rem; color: var(--plum); font-weight: 800; letter-spacing: -0.3px; }
+    .rounds-note { color: var(--muted); font-weight: 700; font-size: 0.95rem; }
+    @keyframes boomPop { 0% { transform: scale(0.3); opacity: 0; } 60% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }
+    .boom-emoji { animation: boomPop .5s cubic-bezier(.2,.9,.3,1.2); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- HOME -->
+    <section id="home-screen" class="screen active">
+      <a class="btn ghost top-back" href="../">⇄ Switch game</a>
+      <div class="home-head">
+        <h1>Bomb <span class="hl">Party</span></h1>
+        <p>Say a word that fits the prompt, then pass the phone — fast. Whoever's holding it when the bomb blows loses the round.</p>
+      </div>
+      <div class="settings">
+        <div class="seg" id="mode-seg">
+          <span class="seg-label">Prompts</span>
+          <button data-mode="letters" class="on">Letters</button>
+          <button data-mode="categories">Topics</button>
+        </div>
+        <div class="seg" id="fuse-seg">
+          <span class="seg-label">Fuse</span>
+          <button data-fuse="short">Short</button>
+          <button data-fuse="med" class="on">Medium</button>
+          <button data-fuse="long">Long</button>
+        </div>
+      </div>
+      <details class="howto">
+        <summary>How to play</summary>
+        <ol>
+          <li>Sit in a circle with <b>one phone</b>. Tap <b>Start</b>.</li>
+          <li><b>Letters:</b> say any word that <b>contains</b> the fragment shown (e.g. <b>TR</b> → "s<b>tr</b>eet"). <b>Topics:</b> name something that fits.</li>
+          <li>As soon as you say a word, tap <b>Pass</b> and hand the phone to the next player.</li>
+          <li>The bomb has a hidden fuse — when it blows, whoever's <b>holding the phone loses</b>. No repeating words!</li>
+        </ol>
+      </details>
+      <div class="home-cta"><button class="btn big" onclick="Game.start()">Start game</button></div>
+      <div class="footer-credit">Pass &amp; play • 3+ players • Best played out loud &amp; fast</div>
+    </section>
+
+    <!-- PLAY -->
+    <section id="play-screen" class="screen">
+      <div class="play-top"><span class="pill-note" id="play-round">Round 1</span></div>
+      <div class="center-col">
+        <div class="prompt-card">
+          <div class="prompt-label" id="prompt-label">Your word must contain</div>
+          <div class="prompt-main" id="prompt-main">—</div>
+          <div class="prompt-hint" id="prompt-hint"></div>
+        </div>
+        <div class="bomb" id="bomb">💣</div>
+        <p class="play-hint">Say a word, then <b>pass it on!</b></p>
+        <button class="btn danger pass-btn" onclick="Game.pass()">Pass ›</button>
+        <button class="btn ghost" onclick="Game.goHome()">End game</button>
+      </div>
+    </section>
+
+    <!-- BOOM -->
+    <section id="boom-screen" class="screen">
+      <div class="center-col">
+        <div class="big-emoji boom-emoji" id="boom-emoji">💥</div>
+        <h2>Boom! You're holding it.</h2>
+        <p class="howto">Whoever's holding the phone takes the loss. Pass it to the left and go again.</p>
+        <div class="rounds-note" id="rounds-note">Rounds played: 1</div>
+        <div class="results-actions">
+          <button class="btn" onclick="Game.nextRound()">Next round</button>
+          <button class="btn ghost" onclick="Game.goHome()">Home</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="prompts.js"></script>
+  <script>
+  const Game = (() => {
+    const $ = id => document.getElementById(id);
+    const screens = ['home', 'play', 'boom'];
+    const FUSE = { short: [8, 16], med: [15, 28], long: [25, 42] };  // seconds [min,max]
+
+    let cfg = { mode: 'letters', fuse: 'med' };
+    let deck = [], rounds = 0, currentScreen = 'home';
+    let fuseTotal = 0, elapsedBase = 0, fuseStart = 0, tickTimer = null;
+    let wakeLock = null;
+
+    const SET_KEY = 'bomb_settings_v1';
+    function loadSettings() { try { const s = JSON.parse(localStorage.getItem(SET_KEY)); if (s) cfg = { ...cfg, ...s }; } catch {} }
+    function persist() { try { localStorage.setItem(SET_KEY, JSON.stringify(cfg)); } catch {} }
+
+    function show(name) {
+      currentScreen = name;
+      screens.forEach(s => $(s + '-screen').classList.toggle('active', s === name));
+    }
+
+    // ---- Prompts ----
+    function pool() {
+      const p = window.BOMB_PROMPTS || { letters: [], categories: [] };
+      return (cfg.mode === 'letters' ? p.letters : p.categories) || [];
+    }
+    function refillDeck() { deck = shuffle([...pool()]); }
+    function nextPrompt() {
+      if (!deck.length) refillDeck();
+      const item = deck.pop() || '—';
+      if (cfg.mode === 'letters') {
+        $('prompt-label').textContent = 'Your word must contain';
+        $('prompt-main').textContent = item;
+        $('prompt-main').className = 'prompt-main frag';
+        $('prompt-hint').textContent = 'Any word with these letters in a row';
+      } else {
+        $('prompt-label').textContent = 'Name one';
+        $('prompt-main').textContent = item;
+        $('prompt-main').className = 'prompt-main';
+        $('prompt-hint').textContent = '';
+      }
+    }
+
+    // ---- Fuse ----
+    function armFuse() {
+      const [lo, hi] = FUSE[cfg.fuse] || FUSE.med;
+      fuseTotal = (lo + Math.random() * (hi - lo)) * 1000;
+      elapsedBase = 0;
+      fuseStart = Date.now();
+      scheduleTick();
+    }
+    function scheduleTick() {
+      const elapsed = elapsedBase + (Date.now() - fuseStart);
+      if (elapsed >= fuseTotal) { boom(); return; }
+      const frac = elapsed / fuseTotal;                 // 0 → 1
+      const interval = 700 - frac * 540;                // 700ms → 160ms (accelerating)
+      beep(300 + frac * 300, 0.045);
+      vibrate(8);
+      try { $('bomb').animate([{ transform: 'scale(1)' }, { transform: 'scale(1.14)' }, { transform: 'scale(1)' }], { duration: Math.max(120, interval * 0.9) }); } catch {}
+      tickTimer = setTimeout(scheduleTick, interval);
+    }
+    function clearTick() { if (tickTimer) { clearTimeout(tickTimer); tickTimer = null; } }
+
+    // ---- Flow ----
+    function start() {
+      rounds = 0;
+      refillDeck();
+      requestWake();
+      newRound();
+    }
+    function newRound() {
+      clearTick();
+      nextPrompt();
+      $('play-round').textContent = `Round ${rounds + 1}`;
+      show('play');
+      armFuse();
+    }
+    function pass() {
+      if (currentScreen !== 'play') return;
+      nextPrompt();
+      beep(520, 0.04);
+      vibrate(12);
+    }
+    function boom() {
+      clearTick();
+      rounds++;
+      $('rounds-note').textContent = `Rounds played: ${rounds}`;
+      show('boom');
+      // re-trigger the pop animation
+      const e = $('boom-emoji'); e.classList.remove('boom-emoji'); void e.offsetWidth; e.classList.add('boom-emoji');
+      beep(140, 0.5);
+      vibrate([90, 50, 90, 50, 220]);
+    }
+    function nextRound() { requestWake(); newRound(); }
+    function goHome() { clearTick(); releaseWake(); show('home'); }
+
+    // ---- Settings UI ----
+    function bindSettings() {
+      $('mode-seg').querySelectorAll('button[data-mode]').forEach(b => {
+        b.classList.toggle('on', b.dataset.mode === cfg.mode);
+        b.onclick = () => { cfg.mode = b.dataset.mode; persist(); $('mode-seg').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); };
+      });
+      $('fuse-seg').querySelectorAll('button[data-fuse]').forEach(b => {
+        b.classList.toggle('on', b.dataset.fuse === cfg.fuse);
+        b.onclick = () => { cfg.fuse = b.dataset.fuse; persist(); $('fuse-seg').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); };
+      });
+    }
+
+    // ---- Helpers ----
+    function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+    let audioCtx = null;
+    function beep(freq, dur) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.frequency.value = freq; o.type = 'sine';
+        o.connect(g); g.connect(audioCtx.destination);
+        g.gain.setValueAtTime(0.14, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+        o.start(); o.stop(audioCtx.currentTime + dur);
+      } catch {}
+    }
+    function vibrate(p) { try { navigator.vibrate && navigator.vibrate(p); } catch {} }
+    async function requestWake() { try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch {} }
+    function releaseWake() { try { wakeLock && wakeLock.release(); wakeLock = null; } catch {} }
+
+    // ---- Init ----
+    function init() {
+      loadSettings();
+      bindSettings();
+      document.addEventListener('visibilitychange', () => {
+        if (currentScreen !== 'play') return;
+        if (document.visibilityState === 'hidden') {
+          // pause the fuse so a backgrounded tab can't explode unseen
+          elapsedBase += Date.now() - fuseStart;
+          clearTick();
+        } else {
+          fuseStart = Date.now();
+          requestWake();
+          scheduleTick();
+        }
+      });
+    }
+
+    return { init, start, pass, nextRound, goHome };
+  })();
+
+  Game.init();
+  </script>
+  <script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('../sw.js').catch(() => {})); }</script>
+</body>
+</html>

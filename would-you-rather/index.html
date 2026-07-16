@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f1e6" />
+  <title>Would You Rather — Party Prompts</title>
+  <meta name="description" content="A free single-phone party game. Tap through decks of Would You Rather, This or That, Never Have I Ever, and Most Likely To. No install, no login." />
+  <link rel="manifest" href="../manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Would You Rather" />
+  <link rel="apple-touch-icon" href="../icon.svg" />
+  <style>
+    :root {
+      color-scheme: light;
+      --plum: #3c2a63;
+      --purple: #5b3d94;
+      --purple-soft: #7d61c4;
+      --lilac: #e8dff8;
+      --cream: #f7f1e6;
+      --card: #fffdf6;
+      --card-2: #efe7d6;
+      --ink: #2e2547;
+      --muted: #867b9e;
+      --line: rgba(60,42,99,0.13);
+      --yellow: #f6ce45;
+      --yellow-deep: #d99a13;
+      --green: #7cc47f;
+      --green-deep: #4fa863;
+      --coral: #f18a5d;
+      --coral-deep: #e0693f;
+      --radius: 22px;
+      --font: ui-rounded, 'SF Pro Rounded', 'Baloo 2', 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font);
+      color: var(--ink);
+      overflow: hidden;
+      user-select: none; -webkit-user-select: none;
+      -webkit-font-smoothing: antialiased;
+      background:
+        radial-gradient(118% 55% at 50% -8%, rgba(91,61,148,0.13), transparent 62%),
+        radial-gradient(90% 42% at 104% 110%, rgba(246,206,69,0.12), transparent 60%),
+        var(--cream);
+    }
+    #app { height: 100dvh; display: flex; flex-direction: column; }
+    .screen { flex: 1; display: none; flex-direction: column; overflow-y: auto; padding: calc(env(safe-area-inset-top) + 12px) 20px calc(env(safe-area-inset-bottom) + 14px); }
+    .screen.active { display: flex; animation: screenIn .32s cubic-bezier(.2,.8,.25,1); }
+    @keyframes screenIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    .howto { max-width: 380px; color: var(--muted); line-height: 1.6; font-size: 0.98rem; font-weight: 500; }
+    .howto b { color: var(--ink); font-weight: 800; }
+
+    /* ---------- Buttons ---------- */
+    .btn { border: none; border-radius: 999px; padding: 15px 30px; font-size: 1.05rem; font-weight: 800; cursor: pointer; color: #fff; background: var(--purple); box-shadow: 0 8px 20px rgba(91,61,148,0.3); transition: transform .12s ease, box-shadow .12s ease, filter .12s ease; font-family: inherit; }
+    .btn:hover { filter: brightness(1.05); box-shadow: 0 12px 26px rgba(91,61,148,0.4); }
+    .btn:active { transform: translateY(1px) scale(0.99); }
+    .btn.big { padding: 17px 46px; font-size: 1.2rem; }
+    .btn.ghost { background: var(--card); border: 1.5px solid var(--line); color: var(--purple); box-shadow: none; }
+    .btn.ghost:hover { filter: none; background: var(--lilac); box-shadow: none; }
+    .btn:disabled { opacity: .5; cursor: default; filter: none; box-shadow: none; }
+    .btn:focus-visible { outline: 3px solid var(--yellow-deep); outline-offset: 2px; }
+    .top-back { align-self: flex-start; padding: 11px 18px; font-size: 0.95rem; text-decoration: none; }
+
+    /* ---------- Home ---------- */
+    .home-head { text-align: center; padding: 24px 0 6px; }
+    .home-head h1 { font-size: clamp(2.3rem, 8.5vw, 3.3rem); font-weight: 800; color: var(--plum); letter-spacing: -0.5px; line-height: 1.02; }
+    .home-head h1 .hl { background: linear-gradient(var(--yellow), var(--yellow)) 0 78%/100% 32% no-repeat; padding: 0 .1em; border-radius: 4px; }
+    .home-head p { color: var(--muted); margin: 14px auto 0; font-size: 1rem; max-width: 420px; line-height: 1.5; font-weight: 500; }
+    .section-title { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1.6px; font-weight: 800; margin: 20px auto 10px; max-width: 460px; width: 100%; }
+
+    .deck-list { display: flex; flex-direction: column; gap: 12px; max-width: 460px; width: 100%; margin: 0 auto; }
+    .deck-item { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 15px 18px; cursor: pointer; box-shadow: 0 4px 14px rgba(60,42,99,0.07); text-align: left; width: 100%; font-family: inherit; transition: transform .12s ease, box-shadow .12s ease; }
+    .deck-item:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(60,42,99,0.14); }
+    .deck-item:focus-visible { outline: 3px solid var(--yellow-deep); outline-offset: 2px; }
+    .deck-ic { width: 50px; height: 50px; border-radius: 14px; display: grid; place-items: center; font-size: 1.7rem; flex: none; background: var(--lilac); }
+    .deck-tx { min-width: 0; }
+    .deck-tx b { display: block; font-size: 1.12rem; color: var(--plum); font-weight: 800; }
+    .deck-tx small { color: var(--muted); font-weight: 600; font-size: 0.86rem; }
+    .deck-go { margin-left: auto; color: var(--purple); font-weight: 900; font-size: 1.35rem; padding-left: 8px; }
+    .footer-credit { text-align: center; color: var(--muted); font-size: 0.76rem; padding: 16px 0 6px; font-weight: 500; }
+
+    /* ---------- Play ---------- */
+    .play-head { display: flex; align-items: center; gap: 10px; padding-bottom: 6px; }
+    .deck-pill { display: inline-flex; align-items: center; gap: 7px; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; font-weight: 800; color: var(--plum); font-size: 0.9rem; }
+    .counter { margin-left: auto; color: var(--muted); font-weight: 800; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+    .wyr-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; width: 100%; }
+
+    .opt { width: 100%; max-width: 460px; background: var(--card); border: 2px solid var(--line); border-radius: 20px; padding: 22px 46px 22px 20px; cursor: pointer; position: relative; overflow: hidden; font-family: inherit; text-align: center; }
+    .opt:focus-visible { outline: 3px solid var(--yellow-deep); outline-offset: 2px; }
+    .opt-tx { font-size: 1.28rem; font-weight: 800; color: var(--plum); position: relative; z-index: 1; line-height: 1.25; }
+    .opt-bar { position: absolute; inset: 0 auto 0 0; width: 0; z-index: 0; transition: width .5s cubic-bezier(.2,.8,.25,1); }
+    .opt.a .opt-bar { background: #e6dcfa; }
+    .opt.b .opt-bar { background: #fdefc4; }
+    .opt-pct { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-weight: 900; color: var(--purple); z-index: 1; opacity: 0; transition: opacity .3s; font-variant-numeric: tabular-nums; }
+    .opt.voted .opt-pct { opacity: 1; }
+    .or-chip { font-weight: 900; color: var(--muted); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 5px 15px; font-size: 0.78rem; letter-spacing: 1.5px; }
+
+    .line-card { width: 100%; max-width: 460px; background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 32px 26px; box-shadow: 0 10px 30px rgba(60,42,99,0.10); text-align: center; }
+    .line-lead { color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1.4px; font-size: 0.76rem; }
+    .line-main { font-size: clamp(1.5rem, 6.5vw, 2.05rem); font-weight: 800; color: var(--plum); margin-top: 10px; line-height: 1.2; }
+    .vote-hint { color: var(--muted); font-weight: 700; font-size: 0.9rem; }
+
+    .play-actions { display: flex; gap: 12px; justify-content: center; align-items: center; padding: 8px 0 4px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- HOME -->
+    <section id="home-screen" class="screen active">
+      <a class="btn ghost top-back" href="../">⇄ Switch game</a>
+      <div class="home-head">
+        <h1>Would You <span class="hl">Rather</span></h1>
+        <p>Pass one phone around and tap through endless party prompts. Pick a deck to start.</p>
+      </div>
+      <div class="section-title">Choose a deck</div>
+      <div class="deck-list" id="deck-list"></div>
+      <div class="footer-credit">Pass &amp; play • 2+ players • Tap for the next prompt</div>
+    </section>
+
+    <!-- PLAY -->
+    <section id="play-screen" class="screen">
+      <div class="play-head">
+        <button class="btn ghost top-back" style="align-self:auto" onclick="Game.goHome()">‹ Decks</button>
+        <span class="counter" id="counter">1 / 1</span>
+      </div>
+      <div class="wyr-wrap" id="wyr-wrap"><!-- card injected here --></div>
+      <div class="play-actions">
+        <button class="btn big" onclick="Game.next()">Next ›</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="prompts.js"></script>
+  <script>
+  const Game = (() => {
+    const $ = id => document.getElementById(id);
+    const screens = ['home', 'play'];
+    const DECKS = [...(window.WYR_DECKS || [])];
+
+    let deck = null, order = [], pos = 0, votes = { a: 0, b: 0 }, currentScreen = 'home';
+    const LAST_KEY = 'wyr_last_deck_v1';
+
+    function show(name) {
+      currentScreen = name;
+      screens.forEach(s => $(s + '-screen').classList.toggle('active', s === name));
+    }
+
+    // ---- Home: deck picker ----
+    function renderDeckList() {
+      const wrap = $('deck-list');
+      wrap.innerHTML = '';
+      DECKS.forEach(d => {
+        const b = document.createElement('button');
+        b.className = 'deck-item';
+        b.innerHTML =
+          `<span class="deck-ic" style="background:${hexToSoft(d.color)}">${d.emoji}</span>` +
+          `<span class="deck-tx"><b>${d.name}</b><small>${d.items.length} prompts</small></span>` +
+          `<span class="deck-go">›</span>`;
+        b.onclick = () => start(d.id);
+        wrap.appendChild(b);
+      });
+    }
+
+    // ---- Flow ----
+    function start(id) {
+      deck = DECKS.find(d => d.id === id) || DECKS[0];
+      if (!deck) return;
+      try { localStorage.setItem(LAST_KEY, deck.id); } catch {}
+      order = shuffle(deck.items.map((_, i) => i));
+      pos = 0;
+      render();
+      show('play');
+    }
+    function next() {
+      pos++;
+      if (pos >= order.length) { order = shuffle(order); pos = 0; }  // endless, reshuffle each pass
+      render();
+      beep(500, 0.04);
+    }
+    function render() {
+      const item = deck.items[order[pos]];
+      $('counter').textContent = `${pos + 1} / ${order.length}`;
+      const wrap = $('wyr-wrap');
+      if (deck.type === 'ab') {
+        votes = { a: 0, b: 0 };
+        wrap.innerHTML =
+          `<button class="opt a" onclick="Game.vote('a')"><span class="opt-bar"></span><span class="opt-tx">${item.a}</span><span class="opt-pct" id="pct-a"></span></button>` +
+          `<span class="or-chip">OR</span>` +
+          `<button class="opt b" onclick="Game.vote('b')"><span class="opt-bar"></span><span class="opt-tx">${item.b}</span><span class="opt-pct" id="pct-b"></span></button>`;
+      } else {
+        wrap.innerHTML =
+          `<div class="line-card"><div class="line-lead">${deck.lead || ''}</div><div class="line-main">${item}</div></div>` +
+          `<p class="vote-hint">Go around the circle — everyone answers.</p>`;
+      }
+    }
+    function vote(side) {
+      votes[side]++;
+      const total = votes.a + votes.b;
+      const pa = Math.round(votes.a / total * 100), pb = 100 - pa;
+      const aEl = document.querySelector('.opt.a'), bEl = document.querySelector('.opt.b');
+      if (!aEl || !bEl) return;
+      aEl.classList.add('voted'); bEl.classList.add('voted');
+      aEl.querySelector('.opt-bar').style.width = pa + '%';
+      bEl.querySelector('.opt-bar').style.width = pb + '%';
+      $('pct-a').textContent = pa + '%';
+      $('pct-b').textContent = pb + '%';
+      beep(side === 'a' ? 620 : 480, 0.04);
+      vibrate(10);
+    }
+    function goHome() { show('home'); }
+
+    // ---- Helpers ----
+    function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+    function hexToSoft(hex) {
+      const n = parseInt((hex || '#5b3d94').slice(1), 16);
+      const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+      return `rgba(${r},${g},${b},0.16)`;
+    }
+    let audioCtx = null;
+    function beep(freq, dur) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.frequency.value = freq; o.type = 'sine';
+        o.connect(g); g.connect(audioCtx.destination);
+        g.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+        o.start(); o.stop(audioCtx.currentTime + dur);
+      } catch {}
+    }
+    function vibrate(p) { try { navigator.vibrate && navigator.vibrate(p); } catch {} }
+
+    // ---- Init ----
+    function init() { renderDeckList(); }
+
+    return { init, start, next, vote, goHome };
+  })();
+
+  Game.init();
+  </script>
+  <script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('../sw.js').catch(() => {})); }</script>
+</body>
+</html>

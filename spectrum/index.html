@@ -6,6 +6,11 @@
   <meta name="theme-color" content="#f7f1e6" />
   <title>Spectrum — Party Guessing Game</title>
   <meta name="description" content="A free pass-and-play party game inspired by Wavelength. One player gives a clue on a hidden spectrum; the group dials in the guess. No install, no login." />
+  <link rel="manifest" href="../manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Spectrum" />
+  <link rel="apple-touch-icon" href="../icon.svg" />
   <style>
     :root {
       color-scheme: light;
@@ -570,5 +575,6 @@
 
   Game.init();
   </script>
+  <script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('../sw.js').catch(() => {})); }</script>
 </body>
 </html>

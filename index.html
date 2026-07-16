@@ -5,7 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#f7f1e6" />
   <title>Amusement Park Games 🎡</title>
-  <meta name="description" content="A collection of free, browser-based party games you can play right now — no install, no login." />
+  <meta name="description" content="A collection of free, browser-based party games you can play right now — one phone, no internet needed. Install it and play offline." />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Park Games" />
+  <link rel="apple-touch-icon" href="./icon.svg" />
   <style>
     :root {
       color-scheme: light;
@@ -59,7 +64,7 @@
 <body>
   <header>
     <h1>🎡 Amusement <span class="hl">Park</span> Games</h1>
-    <p>Free party games that run right in your browser. No install, no login — just open one and play.</p>
+    <p>Free party games for one phone — no internet needed. Play in your browser, or install to your home screen and play offline.</p>
   </header>
 
   <div class="grid">
@@ -79,6 +84,22 @@
       <div class="play">Play now →</div>
     </a>
 
+    <a class="game" href="./bomb-party/">
+      <div class="glow" style="background:#e0693f"></div>
+      <div class="emoji">💣</div>
+      <h2>Bomb Party</h2>
+      <p>Say a word that fits the prompt and pass fast — whoever's holding the phone when the bomb goes off loses. Letters or topics, adjustable fuse.</p>
+      <div class="play">Play now →</div>
+    </a>
+
+    <a class="game" href="./would-you-rather/">
+      <div class="glow" style="background:#4fa863"></div>
+      <div class="emoji">🤔</div>
+      <h2>Would You Rather</h2>
+      <p>Tap through endless party prompts — Would You Rather, This or That, Never Have I Ever, and Most Likely To. Vote and debate.</p>
+      <div class="play">Play now →</div>
+    </a>
+
     <a class="game soon">
       <div class="glow" style="background:#f6ce45"></div>
       <div class="emoji">✨</div>
@@ -91,5 +112,6 @@
   <footer>
     Open source · <a href="https://github.com/samanthathompson52/amusement-park-games">View on GitHub</a>
   </footer>
+  <script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {})); }</script>
 </body>
 </html>

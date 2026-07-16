@@ -6,6 +6,11 @@
   <meta name="theme-color" content="#f7f1e6" />
   <title>Heads Up Party — Guessing Game</title>
   <meta name="description" content="A free Heads Up style party game with ready-to-play card packs. Hold the phone to your forehead, tilt down for correct, up to pass." />
+  <link rel="manifest" href="../manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Heads Up!" />
+  <link rel="apple-touch-icon" href="../icon.svg" />
   <style>
     :root {
       color-scheme: light;
@@ -947,5 +952,6 @@
 
   Game.init();
   </script>
+  <script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('../sw.js').catch(() => {})); }</script>
 </body>
 </html>

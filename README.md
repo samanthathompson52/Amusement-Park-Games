@@ -9,7 +9,9 @@ no build step — open one and play. Built to be hosted anywhere static files li
 | Game | Description | Play |
 | --- | --- | --- |
 | 🙌 **[Heads Up!](./heads-up/)** | Hold the phone to your forehead and guess the word from your friends' clues. Ships with 10 ready-to-play card packs (338+ cards), tilt controls, a timer, and build-your-own decks. | [`/heads-up/`](./heads-up/) |
-| 🎯 **[Spectrum](./spectrum/)** | A pass-and-play take on *Wavelength*. One player gives a one-word clue for a hidden point on a spectrum; everyone else moves a dial to guess. Teams mode with bonus bets or co-op, a draggable semicircular dial, and 56 spectrum cards. | [`/spectrum/`](./spectrum/) |
+| 🎯 **[Spectrum](./spectrum/)** | A pass-and-play take on *Wavelength*. One player gives a one-word clue for a hidden point on a spectrum; everyone else moves a dial to guess. Teams mode with bonus bets or co-op, a full circular dial, and 56 spectrum cards. | [`/spectrum/`](./spectrum/) |
+| 💣 **[Bomb Party](./bomb-party/)** | Hot-potato word game for one phone. Say a word that fits the prompt (a letter fragment or a topic), then pass fast — whoever's holding it when the bomb blows loses. Adjustable fuse, ticking sound, and haptics. | [`/bomb-party/`](./bomb-party/) |
+| 🤔 **[Would You Rather](./would-you-rather/)** | Tap through endless party prompts across four decks — Would You Rather, This or That, Never Have I Ever, and Most Likely To — with a live group-vote tally. | [`/would-you-rather/`](./would-you-rather/) |
 
 _More games get added to the park over time._
 
@@ -20,6 +22,16 @@ Once GitHub Pages is enabled for this repo, the games are live at:
 - **Landing page:** `https://samanthathompson52.github.io/Amusement-Park-Games/`
 - **Heads Up!:** `https://samanthathompson52.github.io/Amusement-Park-Games/heads-up/`
 - **Spectrum:** `https://samanthathompson52.github.io/Amusement-Park-Games/spectrum/`
+- **Bomb Party:** `https://samanthathompson52.github.io/Amusement-Park-Games/bomb-party/`
+- **Would You Rather:** `https://samanthathompson52.github.io/Amusement-Park-Games/would-you-rather/`
+
+### 📲 Install &amp; play offline (PWA)
+
+The park is a Progressive Web App: a [web manifest](./manifest.webmanifest) plus a
+[service worker](./sw.js) precache the landing page and every game. Open the site once,
+then use your browser's **Add to Home Screen** / **Install** option — after that it launches
+full-screen and every game works with **no internet connection at all**. (Service workers
+need HTTPS, which GitHub Pages provides automatically.)
 
 ### Enable GitHub Pages (one-time)
 
