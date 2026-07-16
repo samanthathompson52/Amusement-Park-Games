@@ -209,6 +209,11 @@
     .deck-filter button { padding: 8px 13px; display: inline-flex; align-items: center; gap: 7px; }
     .deck-filter .cnt { font-size: 0.7rem; font-weight: 800; background: var(--card-2); color: var(--muted); padding: 1px 7px; border-radius: 999px; font-variant-numeric: tabular-nums; }
     .deck-filter button.on .cnt { background: rgba(255,255,255,0.24); color: #fff; }
+    .deck-search { display: block; width: 100%; max-width: 560px; margin: 0 auto 14px; background: var(--card); border: 1px solid var(--line); color: var(--ink); border-radius: 14px; padding: 13px 16px; font-size: 1rem; font-family: inherit; -webkit-appearance: none; appearance: none; }
+    .deck-search::placeholder { color: var(--muted); opacity: .8; }
+    .deck-search:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 4px var(--lilac); }
+    .deck-cat-title { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.4px; color: var(--muted); margin: 8px 4px 0; }
+    .deck-list > .deck-cat-title:first-child { margin-top: 0; }
 
     .deck-list { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 560px; margin: 0 auto; padding-bottom: 22px; }
     .deck-row {
@@ -282,6 +287,7 @@
         </div>
       </div>
 
+      <input id="deck-search" class="deck-search" type="search" placeholder="🔍  Search decks…" autocomplete="off" aria-label="Search decks" />
       <div class="deck-list" id="deck-grid"></div>
       <div class="footer-credit">Free to play & share • Add your own decks anytime</div>
     </section>
@@ -418,6 +424,12 @@
     let settings = { seconds: 60, control: 'tilt' };  // rounds are always 60 seconds
     let allPacks = [];
     let currentFilter = 'all';   // deck-list filter: all | packs | mine
+    let searchQuery = '';        // live deck-search text (lowercased, trimmed)
+    const CATEGORY_ORDER = [
+      'Entertainment', 'People & History', 'Animals & Nature',
+      'Food, Home & Work', 'World & Science', 'Play & Party',
+      'Kids & Family', 'Throwback'
+    ];
     let current = null;        // active pack
     let deck = [];             // shuffled cards remaining
     let history = [];          // {word, result}
@@ -471,12 +483,15 @@
         cnt.textContent = counts[f];
       });
 
+      const matches = p => !searchQuery ||
+        (p.name + ' ' + (p.desc || '') + ' ' + (p.category || '')).toLowerCase().includes(searchQuery);
       const shown = allPacks.filter(p =>
-        currentFilter === 'mine' ? p.custom : currentFilter === 'packs' ? !p.custom : true);
+        (currentFilter === 'mine' ? p.custom : currentFilter === 'packs' ? !p.custom : true) && matches(p));
 
       const grid = $('deck-grid');
       grid.innerHTML = '';
-      shown.forEach(p => {
+
+      const makeRow = p => {
         const el = document.createElement('div');
         el.className = 'deck-row' + (p.custom ? ' custom' : '');
         el.style.setProperty('--deck', p.color);
@@ -492,15 +507,31 @@
         const go = () => openReady(p);
         el.onclick = go;
         el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } };
-        grid.appendChild(el);
-      });
+        return el;
+      };
+      const section = (title, packs) => {
+        if (!packs.length) return;
+        const h = document.createElement('div');
+        h.className = 'deck-cat-title';
+        h.textContent = title;
+        grid.appendChild(h);
+        packs.forEach(p => grid.appendChild(makeRow(p)));
+      };
+
+      // Custom decks first, then built-ins grouped by category (in order).
+      section('My Decks', shown.filter(p => p.custom));
+      const builtins = shown.filter(p => !p.custom);
+      CATEGORY_ORDER.forEach(cat => section(cat, builtins.filter(p => p.category === cat)));
+      section('More', builtins.filter(p => !CATEGORY_ORDER.includes(p.category)));
 
       if (shown.length === 0) {
         const empty = document.createElement('div');
         empty.className = 'deck-empty';
-        empty.innerHTML = currentFilter === 'mine'
-          ? 'No decks of your own yet. Tap <b>＋ New Deck</b> below to make one.'
-          : 'No decks here yet.';
+        empty.innerHTML = searchQuery
+          ? 'No decks match your search. Try another word, or tap <b>＋ New Deck</b> to make one.'
+          : (currentFilter === 'mine'
+            ? 'No decks of your own yet. Tap <b>＋ New Deck</b> below to make one.'
+            : 'No decks here yet.');
         grid.appendChild(empty);
       }
 
@@ -536,6 +567,11 @@
       });
       $('deck-filter').querySelectorAll('button[data-filter]').forEach(b => {
         b.onclick = () => setFilter(b.dataset.filter);
+      });
+      const searchEl = $('deck-search');
+      if (searchEl) searchEl.addEventListener('input', e => {
+        searchQuery = e.target.value.trim().toLowerCase();
+        renderDecks();
       });
     }
 

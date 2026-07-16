@@ -5,7 +5,7 @@
  * installs to the home screen and plays with no connection. Cache-first with a
  * network fallback that caches new responses. Bump CACHE to ship an update.
  */
-const CACHE = 'park-v2';
+const CACHE = 'park-v3';
 
 // Paths are relative to this file's location (the site root), so they work on
 // the GitHub Pages subpath and on a custom domain alike.

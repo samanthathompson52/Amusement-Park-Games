@@ -8,7 +8,7 @@ no build step — open one and play. Built to be hosted anywhere static files li
 
 | Game | Description | Play |
 | --- | --- | --- |
-| 🙌 **[Heads Up!](./heads-up/)** | Hold the phone to your forehead and guess the word from your friends' clues. Ships with 10 ready-to-play card packs (338+ cards), tilt controls, a timer, and build-your-own decks. | [`/heads-up/`](./heads-up/) |
+| 🙌 **[Heads Up!](./heads-up/)** | Hold the phone to your forehead and guess the word from your friends' clues. Ships with 21 ready-to-play card packs (100+ cards each) organized into browsable categories with deck search, plus tilt controls, a timer, and build-your-own decks. | [`/heads-up/`](./heads-up/) |
 | 🎯 **[Spectrum](./spectrum/)** | A pass-and-play take on *Wavelength*. One player gives a one-word clue for a hidden point on a spectrum; everyone else moves a dial to guess. Teams mode with bonus bets or co-op, a full circular dial, and 56 spectrum cards. | [`/spectrum/`](./spectrum/) |
 | 💣 **[Bomb Party](./bomb-party/)** | Hot-potato word game for one phone. Say a word that fits the prompt (a letter fragment or a topic), then pass fast — whoever's holding it when the bomb blows loses. Adjustable fuse, ticking sound, and haptics. | [`/bomb-party/`](./bomb-party/) |
 | 🤔 **[Would You Rather](./would-you-rather/)** | Tap through endless party prompts across four decks — Would You Rather, This or That, Never Have I Ever, and Most Likely To — with a live group-vote tally. | [`/would-you-rather/`](./would-you-rather/) |
