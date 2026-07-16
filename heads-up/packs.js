@@ -9,9 +9,10 @@
  *   desc   : one-line description
  *   cards  : array of words/phrases players act out or describe
  *
- * Want your own deck? Copy any object below, change the cards, and give it a
- * new id. Custom packs you build in the app are stored in your browser and
- * merged in automatically — these are just the starter templates.
+ * Every built-in pack ships with 100+ cards. Want your own deck? Copy any
+ * object below, change the cards, and give it a new id. Custom packs you build
+ * in the app are stored in your browser and merged in automatically — these are
+ * just the starter templates.
  */
 window.HEADS_UP_PACKS = [
   {
@@ -21,13 +22,24 @@ window.HEADS_UP_PACKS = [
     color: '#f59e0b',
     desc: 'From house pets to the wild savanna.',
     cards: [
-      'Elephant', 'Kangaroo', 'Penguin', 'Dolphin', 'Giraffe', 'Octopus',
-      'Cheetah', 'Koala', 'Sloth', 'Flamingo', 'Hedgehog', 'Chameleon',
-      'Rhinoceros', 'Platypus', 'Jellyfish', 'Peacock', 'Hummingbird', 'Walrus',
-      'Meerkat', 'Armadillo', 'Chihuahua', 'Goldfish', 'Hamster', 'Parrot',
-      'Crocodile', 'Gorilla', 'Zebra', 'Owl', 'Bat', 'Seahorse',
-      'Porcupine', 'Raccoon', 'Otter', 'Panda', 'Toucan', 'Camel',
-      'Lobster', 'Squirrel', 'Woodpecker', 'Tarantula'
+      "Elephant", "Kangaroo", "Penguin", "Dolphin", "Giraffe", "Octopus",
+      "Cheetah", "Koala", "Sloth", "Flamingo", "Hedgehog", "Chameleon",
+      "Rhinoceros", "Platypus", "Jellyfish", "Peacock", "Hummingbird", "Walrus",
+      "Meerkat", "Armadillo", "Chihuahua", "Goldfish", "Hamster", "Parrot",
+      "Crocodile", "Gorilla", "Zebra", "Owl", "Bat", "Seahorse",
+      "Porcupine", "Raccoon", "Otter", "Panda", "Toucan", "Camel",
+      "Lobster", "Squirrel", "Woodpecker", "Tarantula", "Lion", "Tiger",
+      "Bear", "Wolf", "Fox", "Deer", "Moose", "Bison",
+      "Hippopotamus", "Cobra", "Python", "Iguana", "Gecko", "Turtle",
+      "Tortoise", "Frog", "Toad", "Salamander", "Starfish", "Crab",
+      "Jaguar", "Leopard", "Panther", "Lynx", "Hyena", "Warthog",
+      "Gazelle", "Antelope", "Ostrich", "Emu", "Pelican", "Eagle",
+      "Hawk", "Falcon", "Vulture", "Swan", "Duck", "Goose",
+      "Turkey", "Rooster", "Pig", "Cow", "Horse", "Donkey",
+      "Sheep", "Goat", "Llama", "Alpaca", "Ferret", "Skunk",
+      "Beaver", "Chipmunk", "Rabbit", "Badger", "Snail", "Dragonfly",
+      "Grasshopper", "Ladybug", "Ant", "Bee", "Whale", "Orca",
+      "Narwhal", "Stingray", "Seal"
     ]
   },
   {
@@ -37,14 +49,29 @@ window.HEADS_UP_PACKS = [
     color: '#8b5cf6',
     desc: 'Act out the biggest films of all time.',
     cards: [
-      'Titanic', 'Jurassic Park', 'The Lion King', 'Frozen', 'Star Wars',
-      'The Matrix', 'Jaws', 'Toy Story', 'Avatar', 'Shrek',
-      'The Godfather', 'Home Alone', 'Ghostbusters', 'E.T.', 'Rocky',
-      'Finding Nemo', 'The Avengers', 'Forrest Gump', 'Grease', 'Up',
-      'Inception', 'Gladiator', 'Pirates of the Caribbean', 'Back to the Future',
-      'The Wizard of Oz', 'Harry Potter', 'Spider-Man', 'The Notebook',
-      'Mrs. Doubtfire', 'King Kong', 'Moana', 'The Terminator',
-      'Jumanji', 'Men in Black', 'Cast Away', 'Twister'
+      "Titanic", "Jurassic Park", "The Lion King", "Frozen", "Star Wars",
+      "The Matrix", "Jaws", "Toy Story", "Avatar", "Shrek",
+      "The Godfather", "Home Alone", "Ghostbusters", "E.T.", "Rocky",
+      "Finding Nemo", "The Avengers", "Forrest Gump", "Grease", "Up",
+      "Inception", "Gladiator", "Pirates of the Caribbean", "Back to the Future",
+      "The Wizard of Oz", "Harry Potter", "Spider-Man", "The Notebook",
+      "Mrs. Doubtfire", "King Kong", "Moana", "The Terminator",
+      "Jumanji", "Men in Black", "Cast Away", "Twister",
+      "The Dark Knight", "Black Panther", "Iron Man", "Wonder Woman",
+      "The Incredibles", "Despicable Me", "Minions", "Kung Fu Panda",
+      "Madagascar", "Ice Age", "Cars", "Ratatouille", "WALL-E", "Coco",
+      "Encanto", "Tangled", "Beauty and the Beast", "Aladdin", "Cinderella",
+      "Snow White", "The Little Mermaid", "Mulan", "Zootopia", "Inside Out",
+      "Monsters, Inc.", "Brave", "The Jungle Book", "Dumbo", "Bambi",
+      "101 Dalmatians", "The Lord of the Rings", "The Hobbit", "Indiana Jones",
+      "Jurassic World", "The Hunger Games", "Twilight", "Deadpool",
+      "Guardians of the Galaxy", "Doctor Strange", "Captain America", "Thor",
+      "Aquaman", "Superman", "Batman", "Joker", "Venom", "Transformers",
+      "The Fast and the Furious", "Mission: Impossible", "James Bond", "Rambo",
+      "Die Hard", "The Shining", "Psycho", "Alien", "Predator", "The Exorcist",
+      "Halloween", "Scream", "It", "A Quiet Place", "Get Out", "La La Land",
+      "The Greatest Showman", "Mamma Mia", "Dirty Dancing", "The Sound of Music",
+      "Mary Poppins"
     ]
   },
   {
@@ -54,14 +81,30 @@ window.HEADS_UP_PACKS = [
     color: '#ec4899',
     desc: 'Famous faces and household names.',
     cards: [
-      'Beyoncé', 'Tom Hanks', 'Oprah Winfrey', 'Dwayne Johnson', 'Taylor Swift',
-      'Morgan Freeman', 'Lady Gaga', 'Leonardo DiCaprio', 'Ariana Grande',
-      'Will Smith', 'Adele', 'Keanu Reeves', 'Rihanna', 'Snoop Dogg',
-      'Ellen DeGeneres', 'Bad Bunny', 'Zendaya', 'Elon Musk', 'Serena Williams',
-      'Ryan Reynolds', 'Billie Eilish', 'Jennifer Lawrence', 'Drake',
-      'Meryl Streep', 'Justin Bieber', 'Emma Watson', 'Kanye West',
-      'Cristiano Ronaldo', 'Selena Gomez', 'Bruno Mars', 'Gordon Ramsay',
-      'Kim Kardashian', 'Post Malone', 'Scarlett Johansson'
+      "Beyoncé", "Tom Hanks", "Oprah Winfrey", "Dwayne Johnson", "Taylor Swift",
+      "Morgan Freeman", "Lady Gaga", "Leonardo DiCaprio", "Ariana Grande",
+      "Will Smith", "Adele", "Keanu Reeves", "Rihanna", "Snoop Dogg",
+      "Ellen DeGeneres", "Bad Bunny", "Zendaya", "Elon Musk", "Serena Williams",
+      "Ryan Reynolds", "Billie Eilish", "Jennifer Lawrence", "Drake",
+      "Meryl Streep", "Justin Bieber", "Emma Watson", "Kanye West",
+      "Cristiano Ronaldo", "Selena Gomez", "Bruno Mars", "Gordon Ramsay",
+      "Kim Kardashian", "Post Malone", "Scarlett Johansson", "Brad Pitt",
+      "Angelina Jolie", "Johnny Depp", "Robert Downey Jr.", "Chris Hemsworth",
+      "Chris Evans", "Chris Pratt", "Tom Cruise", "Denzel Washington",
+      "Samuel L. Jackson", "Jackie Chan", "Arnold Schwarzenegger", "Jim Carrey",
+      "Eddie Murphy", "Kevin Hart", "Chris Rock", "Jerry Seinfeld",
+      "Steve Carell", "Jennifer Aniston", "Sandra Bullock", "Julia Roberts",
+      "Nicole Kidman", "Reese Witherspoon", "Anne Hathaway", "Natalie Portman",
+      "Emma Stone", "Margot Robbie", "Gal Gadot", "Halle Berry", "Viola Davis",
+      "Michael Jordan", "LeBron James", "Lionel Messi", "Tom Brady",
+      "Usain Bolt", "Tiger Woods", "Muhammad Ali", "Shaquille O'Neal",
+      "Kobe Bryant", "David Beckham", "Madonna", "Elton John", "Paul McCartney",
+      "Mick Jagger", "Bob Marley", "Michael Jackson", "Elvis Presley",
+      "Freddie Mercury", "Whitney Houston", "Mariah Carey", "Katy Perry",
+      "Shakira", "Jennifer Lopez", "Nicki Minaj", "Cardi B", "Ed Sheeran",
+      "Harry Styles", "Justin Timberlake", "Miley Cyrus", "Dua Lipa",
+      "The Weeknd", "Kendrick Lamar", "Jay-Z", "Eminem", "Barack Obama",
+      "Dolly Parton", "Simon Cowell", "Betty White", "Jimmy Fallon"
     ]
   },
   {
@@ -71,15 +114,34 @@ window.HEADS_UP_PACKS = [
     color: '#10b981',
     desc: 'Classic charades — actions & activities.',
     cards: [
-      'Brushing your teeth', 'Riding a horse', 'Swimming', 'Bowling',
-      'Playing guitar', 'Taking a selfie', 'Sneezing', 'Chopping wood',
-      'Fishing', 'Dancing ballet', 'Boxing', 'Juggling', 'Yoga',
-      'Doing laundry', 'Flying a kite', 'Milking a cow', 'Rock climbing',
-      'Playing tennis', 'Conducting an orchestra', 'Blowing out candles',
-      'Tying your shoes', 'Shooting a bow', 'Skateboarding', 'Painting a wall',
-      'Vacuuming', 'Golf swing', 'Jumping rope', 'Eating spaghetti',
-      'Applying makeup', 'Karate chop', 'Snorkeling', 'Air guitar',
-      'Making a snow angel', 'Cracking an egg'
+      "Brushing your teeth", "Riding a horse", "Swimming", "Bowling",
+      "Playing guitar", "Taking a selfie", "Sneezing", "Chopping wood",
+      "Fishing", "Dancing ballet", "Boxing", "Juggling", "Yoga",
+      "Doing laundry", "Flying a kite", "Milking a cow", "Rock climbing",
+      "Playing tennis", "Conducting an orchestra", "Blowing out candles",
+      "Tying your shoes", "Shooting a bow", "Skateboarding", "Painting a wall",
+      "Vacuuming", "Golf swing", "Jumping rope", "Eating spaghetti",
+      "Applying makeup", "Karate chop", "Snorkeling", "Air guitar",
+      "Making a snow angel", "Cracking an egg", "Washing dishes",
+      "Mowing the lawn", "Raking leaves", "Shoveling snow", "Building a sandcastle",
+      "Roasting marshmallows", "Setting up a tent", "Paddling a canoe",
+      "Water skiing", "Ice skating", "Riding a bike", "Driving a car",
+      "Parallel parking", "Hailing a taxi", "Waiting for a bus", "Reading a book",
+      "Writing a letter", "Typing on a keyboard", "Answering the phone",
+      "Taking a photo", "Playing the piano", "Playing the drums",
+      "Playing the violin", "Playing the trumpet", "Singing karaoke",
+      "Break dancing", "Doing the moonwalk", "Line dancing", "Doing a cartwheel",
+      "Hula hooping", "Lifting weights", "Doing push-ups", "Running a marathon",
+      "Serving a volleyball", "Shooting a basketball", "Kicking a soccer ball",
+      "Swinging a bat", "Throwing a football", "Doing a handstand",
+      "Climbing a ladder", "Hammering a nail", "Sawing wood",
+      "Screwing in a lightbulb", "Painting a picture", "Sculpting clay",
+      "Knitting a scarf", "Sewing a button", "Ironing a shirt", "Folding laundry",
+      "Making a bed", "Sweeping the floor", "Watering plants", "Planting seeds",
+      "Picking apples", "Feeding a baby", "Rocking a baby", "Walking a dog",
+      "Grooming a cat", "Petting a puppy", "Scratching an itch",
+      "Putting on socks", "Zipping a jacket", "Buttoning a coat",
+      "Brushing your hair", "Shaving", "Flossing"
     ]
   },
   {
@@ -89,13 +151,26 @@ window.HEADS_UP_PACKS = [
     color: '#ef4444',
     desc: 'Tasty bites and drinks to describe.',
     cards: [
-      'Pizza', 'Sushi', 'Tacos', 'Ice cream', 'Spaghetti', 'Pancakes',
-      'Hamburger', 'Popcorn', 'Cotton candy', 'Guacamole', 'Ramen',
-      'Croissant', 'Watermelon', 'Nachos', 'Cheesecake', 'Smoothie',
-      'Pretzel', 'Dumplings', 'Bacon', 'Cupcake', 'Hot dog', 'Waffles',
-      'Burrito', 'Milkshake', 'Donut', 'French fries', 'Lasagna',
-      'Pineapple', 'Coffee', 'Marshmallow', 'Meatball', 'Bubble tea',
-      'Corn dog', 'Avocado toast'
+      "Pizza", "Sushi", "Tacos", "Ice cream", "Spaghetti", "Pancakes",
+      "Hamburger", "Popcorn", "Cotton candy", "Guacamole", "Ramen",
+      "Croissant", "Watermelon", "Nachos", "Cheesecake", "Smoothie",
+      "Pretzel", "Dumplings", "Bacon", "Cupcake", "Hot dog", "Waffles",
+      "Burrito", "Milkshake", "Donut", "French fries", "Lasagna",
+      "Pineapple", "Coffee", "Marshmallow", "Meatball", "Bubble tea",
+      "Corn dog", "Avocado toast", "Steak", "Fried chicken", "Chicken wings",
+      "Grilled cheese", "Macaroni and cheese", "Mashed potatoes",
+      "Fish and chips", "Clam chowder", "Tomato soup", "Caesar salad",
+      "Spring rolls", "Fried rice", "Pad thai", "Pho", "Curry", "Falafel",
+      "Hummus", "Kebab", "Gyro", "Quesadilla", "Enchiladas", "Tamales",
+      "Churros", "Flan", "Tiramisu", "Brownie", "Chocolate chip cookie",
+      "Apple pie", "Pumpkin pie", "Banana bread", "Bagel", "Muffin", "Scone",
+      "French toast", "Omelette", "Scrambled eggs", "Cereal", "Oatmeal",
+      "Yogurt", "Granola", "Peanut butter", "Jelly", "Honey", "Maple syrup",
+      "Ketchup", "Mustard", "Mayonnaise", "Salsa", "Ranch dressing",
+      "Barbecue sauce", "Strawberry", "Banana", "Grapes", "Orange", "Mango",
+      "Blueberry", "Cherry", "Peach", "Lemon", "Coconut", "Broccoli", "Carrot",
+      "Corn on the cob", "Pickle", "Lemonade", "Hot chocolate", "Iced tea",
+      "Cheeseburger", "Onion rings"
     ]
   },
   {
@@ -105,13 +180,26 @@ window.HEADS_UP_PACKS = [
     color: '#3b82f6',
     desc: 'Games, moves, and athletes.',
     cards: [
-      'Basketball', 'Soccer', 'Tennis', 'Golf', 'Baseball', 'Surfing',
-      'Boxing', 'Skiing', 'Gymnastics', 'Volleyball', 'Hockey', 'Cricket',
-      'Archery', 'Wrestling', 'Table tennis', 'Rugby', 'Figure skating',
-      'Weightlifting', 'Fencing', 'Bowling', 'Rowing', 'Snowboarding',
-      'Badminton', 'Marathon', 'Diving', 'Karate', 'Curling', 'Sumo',
-      'Slam dunk', 'Home run', 'Touchdown', 'Penalty kick', 'Hat trick',
-      'Pole vault'
+      "Basketball", "Soccer", "Tennis", "Golf", "Baseball", "Surfing",
+      "Boxing", "Skiing", "Gymnastics", "Volleyball", "Hockey", "Cricket",
+      "Archery", "Wrestling", "Table tennis", "Rugby", "Figure skating",
+      "Weightlifting", "Fencing", "Bowling", "Rowing", "Snowboarding",
+      "Badminton", "Marathon", "Diving", "Karate", "Curling", "Sumo",
+      "Slam dunk", "Home run", "Touchdown", "Penalty kick", "Hat trick",
+      "Pole vault", "American football", "Ice hockey", "Field hockey",
+      "Lacrosse", "Water polo", "Handball", "Squash", "Racquetball",
+      "Dodgeball", "Kickball", "Softball", "Cycling", "Mountain biking", "BMX",
+      "Motocross", "Formula 1", "NASCAR", "Horse racing", "Polo", "Judo",
+      "Taekwondo", "Kung fu", "Kickboxing", "Mixed martial arts", "Sailing",
+      "Kayaking", "Canoeing", "Rafting", "Windsurfing", "Kitesurfing",
+      "Scuba diving", "Snorkeling", "Water skiing", "Wakeboarding",
+      "Skateboarding", "Rollerblading", "Ice climbing", "Rock climbing",
+      "Bouldering", "Hiking", "Skydiving", "Bungee jumping", "Paragliding",
+      "Hang gliding", "Zip lining", "Discus", "Javelin", "Shot put",
+      "High jump", "Long jump", "Hurdles", "Sprinting", "Relay race",
+      "Triathlon", "Decathlon", "Cross-country", "Speed skating", "Bobsled",
+      "Luge", "Ski jumping", "Biathlon", "Slalom", "Half-pipe", "Free throw",
+      "Three-pointer", "Alley-oop"
     ]
   },
   {
@@ -121,14 +209,31 @@ window.HEADS_UP_PACKS = [
     color: '#a855f7',
     desc: 'Sing, hum, or dance out these hits.',
     cards: [
-      'Happy Birthday', 'Bohemian Rhapsody', 'Baby Shark', 'Sweet Caroline',
-      'YMCA', 'Bad Guy', 'Rolling in the Deep', 'Shake It Off', 'Uptown Funk',
-      'Thriller', 'Wonderwall', 'Despacito', 'Smells Like Teen Spirit',
-      'Dancing Queen', 'Old Town Road', 'Livin\' on a Prayer', 'Hey Jude',
-      'Twinkle Twinkle Little Star', 'We Will Rock You', 'Single Ladies',
-      'Take On Me', 'Africa', 'Blinding Lights', 'Macarena', 'Toxic',
-      'Sweet Home Alabama', 'I Will Survive', 'Don\'t Stop Believin\'',
-      'Wannabe', 'Party in the U.S.A.'
+      "Happy Birthday", "Bohemian Rhapsody", "Baby Shark", "Sweet Caroline",
+      "YMCA", "Bad Guy", "Rolling in the Deep", "Shake It Off", "Uptown Funk",
+      "Thriller", "Wonderwall", "Despacito", "Smells Like Teen Spirit",
+      "Dancing Queen", "Old Town Road", "Livin' on a Prayer", "Hey Jude",
+      "Twinkle Twinkle Little Star", "We Will Rock You", "Single Ladies",
+      "Take On Me", "Africa", "Blinding Lights", "Macarena", "Toxic",
+      "Sweet Home Alabama", "I Will Survive", "Don't Stop Believin'", "Wannabe",
+      "Party in the U.S.A.", "Billie Jean", "Beat It", "Like a Prayer",
+      "Like a Virgin", "I Wanna Dance with Somebody",
+      "Girls Just Want to Have Fun", "Every Breath You Take", "Don't Stop Me Now",
+      "We Are the Champions", "Another One Bites the Dust", "Stairway to Heaven",
+      "Hotel California", "Imagine", "Let It Be", "Yesterday",
+      "Here Comes the Sun", "Purple Rain", "Superstition", "Respect",
+      "What's Going On", "Jailhouse Rock", "Johnny B. Goode", "Ring of Fire",
+      "Sweet Child o' Mine", "Livin' la Vida Loca", "Baby One More Time",
+      "Since U Been Gone", "Umbrella", "Poker Face", "Bad Romance", "Firework",
+      "Roar", "Halo", "Crazy in Love", "Uptown Girl", "Piano Man",
+      "Sweet Dreams", "Careless Whisper", "Tainted Love", "Come On Eileen",
+      "Mr. Brightside", "Seven Nation Army", "Viva la Vida", "Clocks",
+      "Someone Like You", "Hello", "Shallow", "Shape of You", "Perfect",
+      "Thinking Out Loud", "Happy", "Get Lucky", "Can't Stop the Feeling",
+      "24K Magic", "Levitating", "Watermelon Sugar", "As It Was", "Cruel Summer",
+      "Anti-Hero", "Flowers", "Dynamite", "Butter", "Gangnam Style",
+      "Call Me Maybe", "Sugar", "Counting Stars", "Radioactive", "Believer",
+      "Havana", "Señorita"
     ]
   },
   {
@@ -138,13 +243,27 @@ window.HEADS_UP_PACKS = [
     color: '#14b8a6',
     desc: 'Cities, countries, and landmarks.',
     cards: [
-      'Eiffel Tower', 'Egypt', 'Great Wall of China', 'New York City',
-      'Amazon Rainforest', 'Mount Everest', 'Venice', 'The Sahara Desert',
-      'Statue of Liberty', 'Big Ben', 'Grand Canyon', 'Tokyo', 'Niagara Falls',
-      'Australia', 'Antarctica', 'Rome', 'Hawaii', 'The Pyramids',
-      'Times Square', 'Hollywood', 'Machu Picchu', 'The Leaning Tower of Pisa',
-      'Mount Rushmore', 'Dubai', 'Iceland', 'Brazil', 'The Golden Gate Bridge',
-      'Stonehenge', 'Bali', 'Las Vegas', 'The Colosseum', 'Paris'
+      "Eiffel Tower", "Egypt", "Great Wall of China", "New York City",
+      "Amazon Rainforest", "Mount Everest", "Venice", "The Sahara Desert",
+      "Statue of Liberty", "Big Ben", "Grand Canyon", "Tokyo", "Niagara Falls",
+      "Australia", "Antarctica", "Rome", "Hawaii", "The Pyramids",
+      "Times Square", "Hollywood", "Machu Picchu", "The Leaning Tower of Pisa",
+      "Mount Rushmore", "Dubai", "Iceland", "Brazil", "The Golden Gate Bridge",
+      "Stonehenge", "Bali", "Las Vegas", "The Colosseum", "Paris", "London",
+      "Berlin", "Madrid", "Barcelona", "Amsterdam", "Athens", "Istanbul",
+      "Moscow", "Beijing", "Shanghai", "Hong Kong", "Singapore", "Bangkok",
+      "Seoul", "Mumbai", "Cairo", "Cape Town", "Nairobi", "Rio de Janeiro",
+      "Buenos Aires", "Mexico City", "Toronto", "Vancouver", "Chicago",
+      "Los Angeles", "San Francisco", "Miami", "Boston", "Seattle",
+      "New Orleans", "Washington D.C.", "Sydney", "Melbourne", "Auckland",
+      "Dublin", "Edinburgh", "Prague", "Vienna", "Budapest", "Lisbon",
+      "Stockholm", "Copenhagen", "Oslo", "Helsinki", "Reykjavik", "Zurich",
+      "Geneva", "Brussels", "The Taj Mahal", "Mount Fuji",
+      "The Sydney Opera House", "Christ the Redeemer", "The Great Barrier Reef",
+      "The Amazon River", "The Nile", "Victoria Falls", "The Alps",
+      "The Rocky Mountains", "Yellowstone", "Mount Kilimanjaro", "The Dead Sea",
+      "The Panama Canal", "The Vatican", "Buckingham Palace", "The White House",
+      "The Empire State Building", "Angkor Wat", "Petra", "Santorini"
     ]
   },
   {
@@ -154,12 +273,21 @@ window.HEADS_UP_PACKS = [
     color: '#f97316',
     desc: 'Easy, friendly words for all ages.',
     cards: [
-      'Dog', 'Cat', 'Rainbow', 'Balloon', 'Dinosaur', 'Superhero', 'Robot',
-      'Butterfly', 'Cookie', 'Bicycle', 'Snowman', 'Fire truck', 'Teddy bear',
-      'Rocket ship', 'Mermaid', 'Pirate', 'Wizard', 'Ice cream cone',
-      'Bubbles', 'Puppy', 'Kite', 'Clown', 'Frog', 'Dragon', 'Princess',
-      'Train', 'Tooth fairy', 'Unicorn', 'Sandcastle', 'Ladybug',
-      'Cupcake', 'Astronaut', 'Piggy bank', 'Umbrella'
+      "Dog", "Cat", "Rainbow", "Balloon", "Dinosaur", "Superhero", "Robot",
+      "Butterfly", "Cookie", "Bicycle", "Snowman", "Fire truck", "Teddy bear",
+      "Rocket ship", "Mermaid", "Pirate", "Wizard", "Ice cream cone",
+      "Bubbles", "Puppy", "Kite", "Clown", "Frog", "Dragon", "Princess",
+      "Train", "Tooth fairy", "Unicorn", "Sandcastle", "Ladybug",
+      "Cupcake", "Astronaut", "Piggy bank", "Umbrella", "Sun", "Moon", "Star",
+      "Cloud", "Tree", "Flower", "Apple", "Banana", "Ball", "Kitten",
+      "Bunny", "Duck", "Chick", "Cow", "Pig", "Horse", "Sheep", "Fish",
+      "Turtle", "Bird", "Bee", "Spider", "Snail", "Worm", "Ant", "Caterpillar",
+      "Elephant", "Lion", "Tiger", "Monkey", "Bear", "Penguin", "Owl", "Whale",
+      "Shark", "Dolphin", "Crab", "Starfish", "Octopus", "Seahorse", "Car",
+      "Bus", "Boat", "Airplane", "Helicopter", "Truck", "Tractor", "Rocket",
+      "Scooter", "Wagon", "Hat", "Shoe", "Sock", "Mitten", "Crayon", "Book",
+      "Drum", "Guitar", "Whistle", "Bell", "Cake", "Candy", "Lollipop",
+      "Popsicle", "Slide", "Swing", "Seesaw", "Sandbox"
     ]
   },
   {
@@ -169,13 +297,31 @@ window.HEADS_UP_PACKS = [
     color: '#6366f1',
     desc: 'Binge-worthy series to act out.',
     cards: [
-      'Friends', 'The Office', 'Stranger Things', 'Game of Thrones',
-      'Breaking Bad', 'SpongeBob SquarePants', 'The Simpsons', 'Seinfeld',
-      'Squid Game', 'The Mandalorian', 'Sesame Street', 'Grey\'s Anatomy',
-      'Wednesday', 'The Crown', 'Peaky Blinders', 'Ted Lasso', 'Sherlock',
-      'Modern Family', 'Survivor', 'Jeopardy!', 'Bluey', 'The Walking Dead',
-      'Black Mirror', 'Downton Abbey', 'Family Guy', 'Cobra Kai',
-      'The Big Bang Theory', 'Scooby-Doo', 'Bridgerton', 'Pokémon'
+      "Friends", "The Office", "Stranger Things", "Game of Thrones",
+      "Breaking Bad", "SpongeBob SquarePants", "The Simpsons", "Seinfeld",
+      "Squid Game", "The Mandalorian", "Sesame Street", "Grey's Anatomy",
+      "Wednesday", "The Crown", "Peaky Blinders", "Ted Lasso", "Sherlock",
+      "Modern Family", "Survivor", "Jeopardy!", "Bluey", "The Walking Dead",
+      "Black Mirror", "Downton Abbey", "Family Guy", "Cobra Kai",
+      "The Big Bang Theory", "Scooby-Doo", "Bridgerton", "Pokémon",
+      "How I Met Your Mother", "Parks and Recreation", "Brooklyn Nine-Nine",
+      "It's Always Sunny in Philadelphia", "Community", "Arrested Development",
+      "Curb Your Enthusiasm", "Frasier", "Cheers", "Fresh Prince of Bel-Air",
+      "Full House", "Everybody Loves Raymond", "Malcolm in the Middle",
+      "That '70s Show", "Married... with Children", "Roseanne",
+      "The Golden Girls", "M*A*S*H", "I Love Lucy", "The Twilight Zone", "Lost",
+      "24", "Prison Break", "Dexter", "The Wire", "The Sopranos", "Mad Men",
+      "House of Cards", "Ozark", "Better Call Saul", "Fargo", "True Detective",
+      "Westworld", "The Last of Us", "House of the Dragon", "The Witcher",
+      "Vikings", "Outlander", "The Boys", "Loki", "WandaVision",
+      "The Umbrella Academy", "Money Heist", "Dark", "Narcos", "Sex Education",
+      "Never Have I Ever", "Emily in Paris", "The Queen's Gambit", "Beef",
+      "Euphoria", "Riverdale", "Gossip Girl", "Pretty Little Liars",
+      "13 Reasons Why", "Glee", "Gilmore Girls", "One Tree Hill",
+      "Dawson's Creek", "Vampire Diaries", "Avatar: The Last Airbender",
+      "Rick and Morty", "BoJack Horseman", "Adventure Time", "Gravity Falls",
+      "Phineas and Ferb", "Teen Titans", "Looney Tunes", "Tom and Jerry",
+      "The Flintstones", "South Park"
     ]
   }
 ];
