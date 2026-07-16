@@ -208,9 +208,9 @@
     <!-- BET (teams only) -->
     <section id="bet-screen" class="screen">
       <div class="center-col">
-        <div class="big-emoji">🎲</div>
         <h2 id="bet-title">Place your bet</h2>
-        <p class="howto">Is the <b>real target</b> to the left or right of their guess? Guess right for a bonus point.</p>
+        <p class="howto">Is the <b>real target</b> to the left or right of their guess? Bet right for a bonus point.</p>
+        <div class="dial-slot" id="bet-dial"></div>
         <div class="bet-row">
           <button class="btn ghost bet-btn" onclick="Game.placeBet('left')">← Left</button>
           <button class="btn ghost bet-btn" onclick="Game.placeBet('right')">Right →</button>
@@ -462,6 +462,9 @@
       tGuess = Math.round(t);
       if (cfg.mode === 'teams') {
         $('bet-title').textContent = `${TEAMS[1 - activeTeam].name}, place your bet`;
+        // Show the wheel with the locked-in guess (needle) but keep the target hidden —
+        // the betting team decides left/right by where the guess landed, not the answer.
+        mountDial('bet-dial', { target: false, needle: true, interactive: false });
         show('bet');
       } else {
         resolveRound();
