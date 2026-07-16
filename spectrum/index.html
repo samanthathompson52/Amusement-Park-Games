@@ -87,8 +87,11 @@
     .dial-slot { width: 100%; max-width: 420px; margin: 4px auto; }
     .dial-wrap { width: 100%; touch-action: none; }
     .dial-svg { width: 100%; height: auto; display: block; overflow: visible; }
-    .dial-track { fill: none; stroke: url(#specGrad); stroke-width: 22; stroke-linecap: round; }
-    .dial-band { fill: none; stroke-width: 30; stroke-linecap: butt; }
+    .dial-track { fill: none; stroke: url(#specGrad); stroke-width: 28; stroke-linecap: round; }
+    /* Scoring zone sits inset inside the ring channel so a thin rim of the wheel
+       frames it on both edges — the colored blocks read as part of the circle. */
+    .dial-zone-base { fill: none; stroke: var(--purple-soft); stroke-width: 18; stroke-linecap: round; }
+    .dial-band { fill: none; stroke-width: 18; stroke-linecap: butt; }
     .dial-band.b2 { stroke: var(--purple-soft); }
     .dial-band.b3 { stroke: var(--green); }
     .dial-band.b4 { stroke: var(--yellow); }
@@ -343,6 +346,15 @@
     }
     function renderBands() {
       targetG.textContent = '';
+      // Underlay spanning the whole zone with round caps → the colored blocks flow
+      // into the ring with soft ends instead of stopping in a hard flat edge.
+      const zLo = Math.max(0, tc - 16), zHi = Math.min(100, tc + 16);
+      if (zHi - zLo > 0.1) {
+        const base = document.createElementNS(NS, 'path');
+        base.setAttribute('d', arcPath(zLo, zHi));
+        base.setAttribute('class', 'dial-zone-base');
+        targetG.appendChild(base);
+      }
       const bands = [[tc - 16, tc - 10, 'b2'], [tc - 10, tc - 4, 'b3'], [tc - 4, tc + 4, 'b4'], [tc + 4, tc + 10, 'b3'], [tc + 10, tc + 16, 'b2']];
       bands.forEach(([lo, hi, cls]) => {
         lo = Math.max(0, lo); hi = Math.min(100, hi);
