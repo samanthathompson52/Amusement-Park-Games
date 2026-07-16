@@ -84,14 +84,14 @@
     .footer-credit { text-align: center; color: var(--muted); font-size: 0.76rem; padding: 12px 0 6px; font-weight: 500; }
 
     /* ---------- Dial ---------- */
-    .dial-slot { width: 100%; max-width: 420px; margin: 4px auto; }
-    .dial-wrap { width: 100%; touch-action: none; }
+    .dial-slot { width: 100%; max-width: 360px; margin: 4px auto; }
+    .dial-wrap { width: 100%; touch-action: none; position: relative; }
     .dial-svg { width: 100%; height: auto; display: block; overflow: visible; }
-    .dial-track { fill: none; stroke: url(#specGrad); stroke-width: 28; stroke-linecap: round; }
+    .dial-track { fill: none; stroke: url(#specGrad); stroke-width: 26; stroke-linecap: round; }
     /* Scoring zone sits inset inside the ring channel so a thin rim of the wheel
        frames it on both edges — the colored blocks read as part of the circle. */
-    .dial-zone-base { fill: none; stroke: var(--purple-soft); stroke-width: 18; stroke-linecap: round; }
-    .dial-band { fill: none; stroke-width: 18; stroke-linecap: butt; }
+    .dial-zone-base { fill: none; stroke: var(--purple-soft); stroke-width: 15; stroke-linecap: round; }
+    .dial-band { fill: none; stroke-width: 15; stroke-linecap: butt; }
     .dial-band.b2 { stroke: var(--purple-soft); }
     .dial-band.b3 { stroke: var(--green); }
     .dial-band.b4 { stroke: var(--yellow); }
@@ -99,8 +99,8 @@
     .dial-needle { stroke: var(--ink); stroke-width: 5; stroke-linecap: round; }
     .dial-hub { fill: var(--ink); }
     .dial-hub-dot { fill: var(--card); }
-    .poles { display: flex; justify-content: space-between; gap: 10px; margin-top: 2px; }
-    .pole { flex: 1; font-weight: 800; color: var(--ink); font-size: 1rem; padding: 8px 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); line-height: 1.2; }
+    .poles { position: absolute; left: 0; right: 0; bottom: 4%; display: flex; justify-content: space-between; gap: 8px; padding: 0 1%; pointer-events: none; }
+    .pole { max-width: 44%; font-weight: 800; color: var(--ink); font-size: 0.95rem; padding: 8px 13px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); line-height: 1.2; box-shadow: 0 3px 10px rgba(60,42,99,0.08); }
     .pole.pole-l { text-align: left; }
     .pole.pole-r { text-align: right; }
 
@@ -284,14 +284,18 @@
       screens.forEach(s => $(s + '-screen').classList.toggle('active', s === name));
     }
 
-    // ---- Dial geometry ----
-    const CX = 150, CY = 158, R = 130;
+    // ---- Dial geometry (near-full circular wheel with a small gap at the bottom) ----
+    const CX = 150, CY = 150, R = 112;
+    const SWEEP = 300;                                    // degrees of arc (60° gap at bottom)
+    const A0 = 90 + SWEEP / 2;                            // angle at t=0 (240°, lower-left)
     const rad = d => d * Math.PI / 180;
-    const tToAngle = v => 180 * (1 - v / 100);           // 0→180°(left), 100→0°(right)
+    const tToAngle = v => A0 - (v / 100) * SWEEP;         // 0→240°, 50→90°(top), 100→-60°
     const ptR = (a, r) => [CX + r * Math.cos(rad(a)), CY - r * Math.sin(rad(a))];
     function arcPath(lo, hi, r = R) {
-      const [x1, y1] = ptR(tToAngle(lo), r), [x2, y2] = ptR(tToAngle(hi), r);
-      return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 0 0 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+      const a0 = tToAngle(lo), a1 = tToAngle(hi);
+      const [x1, y1] = ptR(a0, r), [x2, y2] = ptR(a1, r);
+      const large = Math.abs(a0 - a1) > 180 ? 1 : 0;      // long way round for the full ring
+      return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 ${large} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
     }
 
     let dialWrap, dialSvg, targetG, needleLine, dragging = false;
@@ -299,17 +303,18 @@
       dialWrap = document.createElement('div');
       dialWrap.className = 'dial-wrap';
       const svg = document.createElementNS(NS, 'svg');
-      svg.setAttribute('viewBox', '0 0 300 172');
+      svg.setAttribute('viewBox', '0 0 300 300');
       svg.setAttribute('class', 'dial-svg');
+      const [nx, ny] = ptR(tToAngle(50), R);
       svg.innerHTML =
-        `<defs><linearGradient id="specGrad" x1="0" y1="0" x2="1" y2="0">
+        `<defs><linearGradient id="specGrad" gradientUnits="userSpaceOnUse" x1="38" y1="150" x2="262" y2="150">
            <stop offset="0" stop-color="#9c86d6"/><stop offset="0.5" stop-color="#d8c7c0"/><stop offset="1" stop-color="#f0b071"/>
          </linearGradient></defs>` +
         `<path class="dial-track" d="${arcPath(0, 100)}"></path>` +
         `<g class="dial-target"></g>` +
-        `<line class="dial-needle" x1="${CX}" y1="${CY}" x2="${CX}" y2="${CY - R + 8}"></line>` +
-        `<circle class="dial-hub" cx="${CX}" cy="${CY}" r="10"></circle>` +
-        `<circle class="dial-hub-dot" cx="${CX}" cy="${CY}" r="3.5"></circle>`;
+        `<line class="dial-needle" x1="${CX}" y1="${CY}" x2="${nx.toFixed(2)}" y2="${ny.toFixed(2)}"></line>` +
+        `<circle class="dial-hub" cx="${CX}" cy="${CY}" r="13"></circle>` +
+        `<circle class="dial-hub-dot" cx="${CX}" cy="${CY}" r="4.5"></circle>`;
       targetG = svg.querySelector('.dial-target');
       needleLine = svg.querySelector('.dial-needle');
       dialSvg = svg;
@@ -330,16 +335,16 @@
     function clientToT(e) {
       const rct = dialSvg.getBoundingClientRect();
       const px = rct.left + (CX / 300) * rct.width;
-      const py = rct.top + (CY / 172) * rct.height;
-      let a = Math.atan2(-(e.clientY - py), e.clientX - px) * 180 / Math.PI; // 0=right,90=up,180=left
-      if (a < 0) a = (e.clientX - px >= 0) ? 0 : 180;
-      a = Math.max(0, Math.min(180, a));
-      return (1 - a / 180) * 100;
+      const py = rct.top + (CY / 300) * rct.height;
+      let a = Math.atan2(-(e.clientY - py), e.clientX - px) * 180 / Math.PI; // standard, -180..180
+      // Unwrap into the arc's continuous range; the gap is centered at the bottom (-90°).
+      if (a < -90) a += 360;
+      return Math.max(0, Math.min(100, (A0 - a) / SWEEP * 100));
     }
 
     function setT(v) { t = Math.max(0, Math.min(100, v)); updateNeedle(); }
     function updateNeedle() {
-      const [x2, y2] = ptR(tToAngle(t), R - 8);
+      const [x2, y2] = ptR(tToAngle(t), R);
       needleLine.setAttribute('x2', x2.toFixed(2));
       needleLine.setAttribute('y2', y2.toFixed(2));
       dialWrap.dataset.t = Math.round(t);
