@@ -127,7 +127,7 @@
     .btn:disabled { opacity: .5; cursor: default; filter: none; box-shadow: none; }
     .btn:focus-visible, .seg button:focus-visible, .ai-chips button:focus-visible, .emoji-pick button:focus-visible { outline: 3px solid var(--yellow-deep); outline-offset: 2px; }
     .link-btn { background: none; border: none; color: var(--muted); text-decoration: underline; cursor: pointer; font-size: 0.9rem; padding: 8px; }
-    .top-back { align-self: flex-start; padding: 11px 18px; font-size: 0.95rem; }
+    .top-back { align-self: flex-start; padding: 11px 18px; font-size: 0.95rem; text-decoration: none; }
 
     /* ---------- Countdown ---------- */
     #countdown-screen { align-items: center; justify-content: center; }
@@ -242,6 +242,7 @@
   <div id="app">
     <!-- HOME -->
     <section id="home-screen" class="screen active">
+      <a class="btn ghost top-back" href="../">⇄ Switch game</a>
       <div class="home-header">
         <h1>Heads <span class="up">Up!</span></h1>
         <p>Pick a deck. Hold the phone to your forehead. Guess the word before time runs out.</p>

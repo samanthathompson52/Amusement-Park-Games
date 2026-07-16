@@ -59,7 +59,7 @@
     .btn.ghost:hover { filter: none; background: var(--lilac); box-shadow: none; }
     .btn:disabled { opacity: .5; cursor: default; filter: none; box-shadow: none; }
     .btn:focus-visible, .seg button:focus-visible { outline: 3px solid var(--yellow-deep); outline-offset: 2px; }
-    .top-back { align-self: flex-start; padding: 11px 18px; font-size: 0.95rem; }
+    .top-back { align-self: flex-start; padding: 11px 18px; font-size: 0.95rem; text-decoration: none; }
     .results-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; padding: 6px 0 20px; }
 
     /* ---------- Segmented pills ---------- */
@@ -136,6 +136,7 @@
   <div id="app">
     <!-- HOME -->
     <section id="home-screen" class="screen active">
+      <a class="btn ghost top-back" href="../">⇄ Switch game</a>
       <div class="home-head">
         <h1>Spectrum</h1>
         <div class="spectrum-bar"></div>
