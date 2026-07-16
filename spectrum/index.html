@@ -436,7 +436,7 @@
       round++;
       if (deck.length === 0) deck = shuffle([...(window.SPECTRUM_CARDS || [])]);
       card = deck.pop() || { left: 'Left', right: 'Right' };
-      tc = Math.round(16 + Math.random() * 68);   // 16..84 keeps the band on-arc
+      tc = Math.round(Math.random() * 100);   // full 0..100 — the yellow bullseye can land at either pole
       t = 50; tGuess = null; bet = null;
       if (cfg.mode === 'teams') activeTeam = (round - 1) % 2;
       const who = cfg.mode === 'teams'
